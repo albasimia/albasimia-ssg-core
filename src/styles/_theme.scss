@@ -1,0 +1,50 @@
+:root {
+  color-scheme: light dark;
+
+  --asc-color-background-light: #ffffff;
+  --asc-color-text-light: #171717;
+  --asc-color-surface-light: #f5f5f5;
+  --asc-color-border-light: #d4d4d4;
+  --asc-color-accent-light: #2457a7;
+
+  --asc-color-background-dark: #111111;
+  --asc-color-text-dark: #f5f5f5;
+  --asc-color-surface-dark: #1f1f1f;
+  --asc-color-border-dark: #525252;
+  --asc-color-accent-dark: #8cb4ff;
+
+  --asc-color-background: var(--asc-color-background-light);
+  --asc-color-text: var(--asc-color-text-light);
+  --asc-color-surface: var(--asc-color-surface-light);
+  --asc-color-border: var(--asc-color-border-light);
+  --asc-color-accent: var(--asc-color-accent-light);
+
+  --asc-font-family-sans: system-ui, sans-serif;
+  --asc-font-family-mono: ui-monospace, monospace;
+  --asc-font-size-small: 0.75rem;
+  --asc-font-size-body: 1rem;
+  --asc-font-weight-bold: 700;
+  --asc-line-height-body: 1.6;
+  --asc-letter-spacing-wide: 0.12em;
+
+  --asc-space-1: 0.25rem;
+  --asc-space-2: 0.5rem;
+  --asc-space-3: 0.75rem;
+  --asc-space-4: 1rem;
+  --asc-space-6: 1.5rem;
+  --asc-space-8: 2rem;
+  --asc-content-width: 72rem;
+  --asc-prose-width: 48rem;
+  --asc-page-gutter: clamp(var(--asc-space-4), 3vw, var(--asc-space-8));
+  --asc-page-block-spacing: clamp(4rem, 10vw, 8rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --asc-color-background: var(--asc-color-background-dark);
+    --asc-color-text: var(--asc-color-text-dark);
+    --asc-color-surface: var(--asc-color-surface-dark);
+    --asc-color-border: var(--asc-color-border-dark);
+    --asc-color-accent: var(--asc-color-accent-dark);
+  }
+}
