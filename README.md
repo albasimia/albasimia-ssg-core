@@ -100,6 +100,7 @@ ASCへ追加する機能は、少なくとも複数の派生プロジェクト�
 - [アーキテクチャ](docs/architecture.md)
 - [設計規約](docs/conventions.md)
 - [ロードマップ](docs/roadmap.md)
+- [Cloudflare Pagesデプロイ雛形](docs/deployment/cloudflare-pages.md)
 - [ADR](docs/adr/)
 
 ## ライセンス

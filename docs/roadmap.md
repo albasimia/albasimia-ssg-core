@@ -1,5 +1,9 @@
 # ロードマップ
 
+## 現在の実装状況
+
+- Deployment Foundation: Cloudflare Pages向けGitHub Actions / Wrangler雛形を2026-07-25に実装済み
+
 ## v0.1 Foundation
 
 ASCの責務と設計原則を確定する。

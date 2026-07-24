@@ -54,7 +54,7 @@
 | A-07 | GitHub Contents/Git Database APIクライアント | `functions/_lib/github.ts` | GitOps Foundationの`features/git-content` | 必須注入のfetchとrepository設定を使い、Contentsおよびblob、tree、commit、ref操作を提供する。HTTP `Response`をthrowせず、request IDとrate limitを含む`GitHubApiError`へ正規化する |
 | A-08 | head SHAを用いた競合検知と複数ファイルの同一Commit保存 | `functions/api/admin/events/index.ts`、`functions/api/admin/events/[slug]/index.ts`、`functions/api/admin/events/[slug]/commit.ts`に重複するGit tree/blob/commit/ref処理 | GitOps Foundationの`features/git-content` | `commitGitFileChanges`が汎用的な`write/delete/copy`を1 commitへまとめる。expected head不一致とnon-force ref更新競合を結果型で表し、HTTP変換、message、author、Domain検証は派生側に残す |
 | A-09 | GitHub Actions実行状態の取得 | `functions/api/admin/deployments/index.ts`、`functions/api/admin/deployments/[commitSha].ts` | Deployment Foundationの`features/deploy-status` | workflow ID/file名、branch、commit SHA、per-page件数を設定化し、workflow runsを安定した`DeploymentRun`へ変換する。GitHub共通request/errorだけを非公開internalで共有し、pollingとHTTP変換は含めない |
-| A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/`、`examples/`または`docs/deployment/` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
+| A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/deployment/cloudflare-pages`と`docs/deployment` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
 
 A-01とA-02の公開API、型定義、責務分担、テスト計画、実装状況は`docs/site-foundation-api-plan.md`に記載する。Site Meta本体とBaseLayout接続、単体・統合テストは2026-07-24に実装済みである。
 
@@ -67,6 +67,8 @@ A-07の公開client、Repository設定、低レベルGit Database操作、error�
 A-08の変更集合、同一Commit保存flow、競合結果、branch状態の境界も`docs/git-content-api.md`に記載する。既存`GitHubClient`を利用する高レベルoperationとmock client単体テストは2026-07-25に実装済みである。
 
 A-09のworkflow設定、run取得条件、status/conclusion正規化、共通GitHub errorとの境界は`docs/deploy-status-api.md`に記載する。独立`deploy-status` featureとmock fetch単体テストは2026-07-25に実装済みである。
+
+A-10のGitHub Actions workflow、Wrangler設定、branch別のpreview/production方針、Secretsと権限は`docs/deployment/cloudflare-pages.md`に記載する。派生プロジェクトがコピーする雛形と構文・placeholder検証テストは2026-07-25に実装済みであり、ASCの公開TypeScript APIには含めない。
 
 A-05とA-06の公開API、型定義、テスト計画、実装状況は`docs/content-source-api-plan.md`に記載する。Codec本体と単体テストは2026-07-24に実装済みである。
 
