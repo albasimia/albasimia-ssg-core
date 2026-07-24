@@ -6,5 +6,5 @@
       "@/*": ["src/*"]
     }
   },
-  "exclude": ["package-dist"]
+  "exclude": ["package-dist", "tests/fixtures"]
 }

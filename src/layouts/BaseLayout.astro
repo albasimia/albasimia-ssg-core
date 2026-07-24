@@ -1,28 +1,21 @@
 ---
 import "../styles/global.scss";
-import { siteConfig } from "@/config/site";
-import { resolvePageMeta } from "@/features/site-meta/resolve";
-import type { PageMeta, SiteConfig } from "@/features/site-meta";
+import { resolvePageMeta } from "../features/site-meta/resolve.js";
+import type { PageMeta, SiteConfig } from "../features/site-meta/index.js";
 
 type Props = {
-  site?: SiteConfig;
+  site: SiteConfig;
   meta?: PageMeta;
-  /** Legacy shorthand for meta.title. */
-  title?: string;
-  /** Legacy shorthand for meta.description. */
-  description?: string;
 };
 
 const {
-  site = siteConfig,
-  meta,
-  title,
-  description,
+  site,
+  meta = {},
 } = Astro.props;
 
 const resolved = resolvePageMeta(
   site,
-  meta ?? { title, description },
+  meta,
   { pathname: Astro.url.pathname },
 );
 ---

@@ -1,6 +1,6 @@
 # Site Foundation 公開API計画
 
-- 状態: Site Meta実装・package公開済み、BaseLayout package公開はP0-3で保留
+- 状態: Site MetaとBaseLayoutをpackage公開済み
 - 対象: `docs/extraction-plan.md`のA-01、A-02のみ
 - 作成日: 2026-07-24
 
@@ -20,7 +20,7 @@
 - 旧`src/lib/seo.ts`をSite Metaへ統合し、canonical実装の重複を解消
 - `tests/site-meta/`に純粋関数、公開境界、BaseLayout buildのテストを追加
 
-Site Metaのsource境界は`src/features/site-meta/index.ts`、package公開subpathは`albasimia-ssg-core/site-meta`とする。`ResolvedPageMeta`と`resolvePageMeta`はそこからexportしない。`BaseLayout.astro`のpackage公開はP0-3で扱い、現時点のpackageには含めない。
+Site Metaのsource境界は`src/features/site-meta/index.ts`、package公開subpathは`albasimia-ssg-core/site-meta`とする。`ResolvedPageMeta`と`resolvePageMeta`はそこからexportしない。BaseLayoutは`albasimia-ssg-core/layouts/BaseLayout.astro`から公開する。
 
 ## 対象範囲
 
@@ -253,7 +253,7 @@ export function serializeRobots(
 export function serializeJsonLd(value: JsonLdObject): string;
 ```
 
-Astro adapterのpackage公開pathはP0-3で決定する。今回確定したTypeScript featureの`exports`には`BaseLayout.astro`を含めない。
+Astro adapterは`albasimia-ssg-core/layouts/BaseLayout.astro`から公開する。`site`は必須、`meta`は任意とし、legacy shorthandは公開しない。
 
 `BaseLayout`は非公開の`resolvePageMeta`を使って全head値を一度に解決する。派生プロジェクトは内部resolverや`ResolvedPageMeta`を組み立てず、`PageMeta`を`BaseLayout`へ渡す。公開する個別関数は設定検証、CLI、テストなどで同じ基本規則を利用するためのものに限定する。
 
@@ -714,10 +714,10 @@ const jsonLd = {
 
 ## 実装時の決定
 
-- Site Metaは`albasimia-ssg-core/site-meta`から公開し、BaseLayoutのpackage exportはP0-3まで保留する
+- Site Metaは`albasimia-ssg-core/site-meta`、BaseLayoutは`albasimia-ssg-core/layouts/BaseLayout.astro`から公開する
 - named `head` slotは共通metaの後に描画する公開拡張点とする
 - JSON-LDは新規依存を追加せず、独自の再帰検査でruntime validationする
-- 旧`SiteConfig`と`createCanonicalUrl`は一括移行し、BaseLayoutの`title`、`description` Propsだけは移行互換のため維持する
+- package公開前にBaseLayoutのlegacy `title`、`description` Propsを削除し、`site`と`meta`へ統一する
 - OGPとTwitter Cardは設計どおり既定で有効とする
 
 OGPとTwitter Cardの既定方針を独立ADRへ記録するかは、package公開subpathの決定時に再評価する。

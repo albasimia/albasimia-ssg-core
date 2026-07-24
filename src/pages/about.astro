@@ -3,6 +3,7 @@ import { getEntry, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
+import { siteConfig } from "@/config/site";
 
 const page = await getEntry("pages", "about");
 
@@ -13,7 +14,10 @@ if (!page) {
 const { Content } = await render(page);
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description}>
+<BaseLayout
+  site={siteConfig}
+  meta={{ title: page.data.title, description: page.data.description }}
+>
   <SiteHeader />
   <main class="container prose">
     <h1>{page.data.title}</h1>

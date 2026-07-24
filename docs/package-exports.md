@@ -4,7 +4,8 @@
 - package名: `albasimia-ssg-core`
 - module形式: ESMのみ
 - 対象: `docs/completion-audit.md`のP0-1、P0-2
-- 対象外: `BaseLayout.astro`、CSS / SCSS、Astro consumer fixture
+- Astro公開物: `BaseLayout.astro`、compile済みCSS
+- 対象外: raw SCSS、ThemeSwitcher、手動theme
 
 ## 公開subpath
 
@@ -17,6 +18,12 @@ TypeScript featureは次の5 subpathだけを公開する。
 | `albasimia-ssg-core/content-source` | `src/features/content-source/index.ts` | YAML / Markdown codec、`ContentSourceError` |
 | `albasimia-ssg-core/git-content` | `src/features/git-content/index.ts` | GitHub client、同一Commit保存、error class |
 | `albasimia-ssg-core/deploy-status` | `src/features/deploy-status/index.ts` | GitHub Actions実行状態client、`GitHubApiError` |
+
+Astro向けに次も公開する。
+
+- `albasimia-ssg-core/layouts/BaseLayout.astro`
+- `albasimia-ssg-core/styles/theme.css`
+- `albasimia-ssg-core/styles/global.css`
 
 利用側はpackageをinstallし、必要なfeatureだけを明示的にimportする。
 
@@ -48,6 +55,7 @@ package rootの`albasimia-ssg-core`にはexportを設けない。
 - source内の相対importは`.js`拡張子を明示し、Node ESMで解決可能なartifactを生成する
 - package buildはAstro site buildから独立している
 - `npm run build`と`npm pack`の前にもpackage buildを実行する
+- Sassから`theme.css`と`global.css`をcompileし、package用BaseLayoutのstyle importを`global.css`へ置き換える
 
 公開型は各subpathの`types` conditionから解決する。consumerが`src`またはTypeScript sourceを直接参照する必要はない。
 
@@ -69,6 +77,8 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 
 - 5 featureのcompile済みJavaScriptと`.d.ts`
 - GitHub APIのcompile済み共有internal
+- package用`BaseLayout.astro`
+- compile済み`theme.css`と`global.css`
 - `templates/deployment/cloudflare-pages/`
 - `README.md`
 - `LICENSE`
@@ -81,15 +91,12 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 - sample pages、components、content、public assets
 - `.github/`とCI
 - repository向け設計文書
-- `BaseLayout.astro`
-- CSS / SCSS
+- raw SCSS
 - Astro configとTypeScript build config
 
 ## sideEffects
 
-現在公開する5つのTypeScript featureは、module import時にglobal state、I/O、style読込を変更しないため、`sideEffects: false`とする。
-
-`BaseLayout.astro`とCSS / SCSSを公開するP0-3では、style importをtree shakingで除去しない設定が必要になる。このためLayout/CSSを追加するときは`sideEffects`を再評価し、style artifactを明示的に副作用ありとして扱う。
+TypeScript feature自体はimport時にglobal stateやI/Oを変更しない。BaseLayoutがCSSをimportするため、`sideEffects`は`**/*.css`だけを副作用ありとして保持する。
 
 ## dependency境界
 
@@ -104,7 +111,9 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 - Node ESMでの実行
 - root、feature内部、共有internalのimport拒否
 - tarball fileのallowlist
-- source、test、sample、CI、Layout、SCSSが含まれないこと
+- source、test、sample、CI、raw SCSSが含まれないこと
+- installed packageを使う最小Astro fixtureのcheckとstatic build
+- 生成HTMLのtitle、canonical、descriptionと公開CSS contract
 
 公開前には次を実行する。
 

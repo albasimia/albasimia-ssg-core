@@ -35,7 +35,7 @@ describe("BaseLayout", () => {
     expect(indexHtml).toContain('<meta name="twitter:card" content="summary">');
   });
 
-  it("keeps legacy page props working during migration", () => {
+  it("accepts page metadata through the meta prop", () => {
     expect(aboutHtml).toContain('<title>ASCについて | ASC Example Site</title>');
     expect(aboutHtml).toContain('<link rel="canonical" href="https://example.com/about/">');
   });

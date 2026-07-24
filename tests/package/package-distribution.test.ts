@@ -1,8 +1,14 @@
 import { execFileSync } from "node:child_process";
 import {
+  cpSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
+  readdirSync,
   rmSync,
+  statSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -16,6 +22,8 @@ const packDirectory = join(temporaryRoot, "pack");
 const consumerDirectory = join(temporaryRoot, "consumer");
 const npmCacheDirectory = join(temporaryRoot, "npm-cache");
 const yamlPackageDirectory = join(projectRoot, "node_modules", "yaml");
+const fixtureDirectory = join(projectRoot, "tests", "fixtures", "minimal-consumer");
+const astroCli = join(projectRoot, "node_modules", "astro", "bin", "astro.mjs");
 
 interface PackResult {
   filename: string;
@@ -27,7 +35,7 @@ let tarballPath: string;
 
 beforeAll(() => {
   mkdirSync(packDirectory, { recursive: true });
-  mkdirSync(consumerDirectory, { recursive: true });
+  cpSync(fixtureDirectory, consumerDirectory, { recursive: true });
 
   const output = execFileSync(
     "npm",
@@ -48,10 +56,6 @@ beforeAll(() => {
   [packResult] = JSON.parse(output) as PackResult[];
   tarballPath = join(packDirectory, packResult.filename);
 
-  writeFileSync(
-    join(consumerDirectory, "package.json"),
-    JSON.stringify({ private: true, type: "module" }),
-  );
   execFileSync(
     "npm",
     [
@@ -71,6 +75,17 @@ beforeAll(() => {
       stdio: "pipe",
     },
   );
+  symlinkSync(
+    join(projectRoot, "node_modules", "astro"),
+    join(consumerDirectory, "node_modules", "astro"),
+    "dir",
+  );
+  mkdirSync(join(consumerDirectory, "node_modules", "@astrojs"), { recursive: true });
+  symlinkSync(
+    join(projectRoot, "node_modules", "@astrojs", "check"),
+    join(consumerDirectory, "node_modules", "@astrojs", "check"),
+    "dir",
+  );
 }, 60_000);
 
 afterAll(() => {
@@ -88,12 +103,17 @@ describe("npm package distribution", () => {
       "package-dist/features/git-content/",
       "package-dist/features/deploy-status/",
       "package-dist/internal/github-api/",
+      "package-dist/layouts/",
+      "package-dist/styles/",
       "templates/deployment/cloudflare-pages/",
     ];
 
     expect(paths).toContain("package-dist/features/site-meta/index.js");
     expect(paths).toContain("package-dist/features/site-meta/index.d.ts");
     expect(paths).toContain("package-dist/features/deploy-status/index.js");
+    expect(paths).toContain("package-dist/layouts/BaseLayout.astro");
+    expect(paths).toContain("package-dist/styles/theme.css");
+    expect(paths).toContain("package-dist/styles/global.css");
     expect(paths).toContain("templates/deployment/cloudflare-pages/cloudflare-pages.yml");
     expect(paths.every((path) =>
       allowedFiles.has(path) || allowedPrefixes.some((prefix) => path.startsWith(prefix))
@@ -102,7 +122,7 @@ describe("npm package distribution", () => {
     expect(paths.some((path) => path.startsWith("tests/"))).toBe(false);
     expect(paths.some((path) => path.startsWith("docs/"))).toBe(false);
     expect(paths.some((path) => path.startsWith(".github/"))).toBe(false);
-    expect(paths.some((path) => path.includes("BaseLayout") || path.endsWith(".scss"))).toBe(false);
+    expect(paths.some((path) => path.endsWith(".scss"))).toBe(false);
   });
 
   it("imports every public runtime subpath from an installed package", () => {
@@ -185,4 +205,45 @@ describe("npm package distribution", () => {
       { cwd: consumerDirectory, encoding: "utf8", stdio: "pipe" },
     )).not.toThrow();
   });
+
+  it("checks and builds a minimal Astro consumer using the installed package", () => {
+    const outputDirectory = join(consumerDirectory, "dist");
+    expect(existsSync(join(
+      consumerDirectory,
+      "node_modules",
+      "albasimia-ssg-core",
+      "package-dist",
+      "features",
+      "site-meta",
+      "resolve.js",
+    ))).toBe(true);
+
+    expect(() => execFileSync(
+      process.execPath,
+      [astroCli, "check"],
+      { cwd: consumerDirectory, encoding: "utf8", stdio: "pipe" },
+    )).not.toThrow();
+    expect(() => execFileSync(
+      process.execPath,
+      [astroCli, "build"],
+      { cwd: consumerDirectory, encoding: "utf8", stdio: "pipe" },
+    )).not.toThrow();
+
+    const html = readFileSync(join(outputDirectory, "index.html"), "utf8");
+    const emittedStyles = readTextFiles(outputDirectory, ".css").join("\n");
+    expect(html).toContain("<title>Home | Consumer Site</title>");
+    expect(html).toContain('<meta name="description" content="Consumer page description">');
+    expect(html).toContain('<link rel="canonical" href="https://consumer.example/">');
+    expect(`${html}\n${emittedStyles}`).toContain("--asc-color-background-light");
+    expect(readFileSync(join(outputDirectory, "sitemap.xml"), "utf8"))
+      .toContain("<loc>https://consumer.example/</loc>");
+  }, 30_000);
 });
+
+function readTextFiles(directory: string, extension: string): string[] {
+  return readdirSync(directory).flatMap((entry) => {
+    const path = join(directory, entry);
+    if (statSync(path).isDirectory()) return readTextFiles(path, extension);
+    return path.endsWith(extension) ? [readFileSync(path, "utf8")] : [];
+  });
+}

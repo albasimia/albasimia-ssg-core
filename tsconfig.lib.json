@@ -13,6 +13,7 @@
   },
   "include": [
     "src/features/site-meta/index.ts",
+    "src/features/site-meta/resolve.ts",
     "src/features/sitemap/index.ts",
     "src/features/content-source/index.ts",
     "src/features/git-content/index.ts",

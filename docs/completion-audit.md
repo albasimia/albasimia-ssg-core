@@ -4,20 +4,20 @@
 - 対象version: `0.1.0`
 - 対象範囲: README、設計文書、ADR、A-01〜A-10、source、layout、style、template、test、package設定、Astro設定、CI、公開予定API
 - 監査方針: この文書では現状を評価するだけとし、新featureの実装や既存実装の変更は行わない
-- 更新: 2026-07-25にP0-1、P0-2を解消。TypeScript featureのpackage公開結果を反映
+- 更新: 2026-07-25にP0-1〜P0-4を解消。TypeScript feature、BaseLayout、CSS、最小Astro consumerを反映
 
 ## 総合判定
 
 A-01〜A-10は、ASC repository内の機能実装、単体・統合テスト、個別設計文書という範囲では概ね完了している。A-01〜A-04a、A-07〜A-10は要求された責務を確認でき、A-05とA-06もASC内の実装とテストは完了している。
 
-P0-1、P0-2の対応により、5つのTypeScript featureは実package名の明示的subpathからESMと型定義を利用できるようになった。packed packageを一時consumerへinstallするtestでruntime、型、private import拒否、配布allowlistを確認している。BaseLayout、CSS、最小Astro consumerは意図的に今回のpackage対象外とし、P0-3以降に残す。
+P0-1〜P0-4の対応により、5つのTypeScript feature、BaseLayout、compile済みCSSを実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認している。
 
 したがって総合判定は次のとおりとする。
 
 - A-01〜A-10の機能完成度: **完了。ただしA-05/A-06の派生project consumer確認は未確認**
 - 設計と実装の一致: **概ね一致。一部の古い記述と責務表現を修正する必要あり**
 - TypeScript feature package: **P0-1、P0-2完了**
-- npm packageとしてのv0.1全体: **P0-3以降が残るため未完成**
+- npm packageとしてのv0.1全体: **P0-1〜P0-4完了。残るrelease文書・metadataはP0-5で確認**
 - v0.1 release可否: **必須修正完了まで不可**
 
 ## A-01〜A-10 完了確認
@@ -85,30 +85,15 @@ package levelでは同じ5境界を`exports`へ列挙し、root、feature内部�
 
 ### P0-2: 配布物allowlistとprivate境界（解消済み）
 
-`files` allowlistにより、compile済み5 feature、必要なcompile済みGitHub共有internal、deployment template、README、LICENSEだけを配布する。`src`、tests、sample site、CI、docs、BaseLayout、SCSSはtarballへ含めない。compile済み共有internalはruntimeに必要だが、`exports`に経路を持たずdeep import testで拒否を確認する。詳細は`docs/package-exports.md`に記載する。
+`files` allowlistにより、compile済み5 feature、必要なcompile済みGitHub共有internal、BaseLayout、compile済みCSS、deployment template、README、LICENSEだけを配布する。`src`、tests、sample site、CI、docs、raw SCSSはtarballへ含めない。compile済み共有internalはruntimeに必要だが、`exports`に経路を持たずdeep import testで拒否を確認する。詳細は`docs/package-exports.md`に記載する。
 
-### P0-3: BaseLayoutとCSSのpackage公開方法が未完成
+### P0-3: BaseLayoutとCSSのpackage公開（解消済み）
 
-公開予定の`BaseLayout.astro`は現在、次のrepository内部事情へ依存する。
+BaseLayoutを`albasimia-ssg-core/layouts/BaseLayout.astro`から公開した。`site`は必須、`meta`は任意で、sample config、`@/` alias、legacy shorthandへ依存しない。package内部はrelative importで解決する。CSSは`styles/theme.css`と`styles/global.css`へcompileし、raw SCSSを配布しない。BaseLayoutは`global.css`を自動importする。
 
-- `@/config/site`からsample用`siteConfig`を読み、`site` prop省略時に`ASC Example Site`を既定値にする
-- consumer側で解決できる保証のない`@/` path aliasを使う
-- `global.scss`を直接importする
-- `title`と`description`のlegacy shorthandを公開Propsとして残す
+### P0-4: 最小Astro consumer（解消済み）
 
-Site Meta設計は固有値を派生側から注入し、利用例でも`site={siteConfig}`を渡すとしている。package公開Layoutがsample設定へfallbackする現状はその方針と矛盾する。v0.1では、package用Layoutの`site`入力、internal resolverへのrelative参照、style読込、legacy Propsの継続期間を確定する必要がある。
-
-CSSについても、契約はCustom PropertiesでありSass partial構造は非公開とされているため、配布時はcompile済みCSSを公開subpathにするのが自然である。theme tokenだけとglobal reset/layout styleを別exportにするか、BaseLayoutがどこまで自動読込するかを決め、consumer buildで検証する必要がある。raw SCSSを公開する場合はconsumer側の`sass`要件を明示しなければならない。
-
-### P0-4: 最小Astro consumer例がない
-
-READMEには実package名と5 subpathのinstall / import例を追加し、TypeScript package consumer testも実装した。ただしBaseLayoutとCSSを含む最小Astro consumer fixtureはP0-3とともに未実装である。
-
-v0.1前に、少なくとも次を行う最小Astro consumer fixtureまたは`examples/minimal`が必要である。
-
-1. `BaseLayout.astro`を確定した公開subpathからimportする
-2. 公開CSSを読み込む、またはLayoutによる読込を確認する
-3. TypeScript checkとAstro static buildを通す
+`tests/fixtures/minimal-consumer`をtarball install後に実行し、package subpathのSiteConfig、BaseLayout、Sitemap、公開CSSを利用してAstro checkとstatic buildを通す。生成HTMLのtitle、canonical、description、CSS token、sitemapを検証する。
 
 A-05/A-06の文書が完了条件とする`catharsiswatari-events`側consumer testも、実施済みかをrelease checklistで確認する。
 
@@ -141,7 +126,7 @@ A-05/A-06の文書が完了条件とする`catharsiswatari-events`側consumer te
 ### 重複と旧実装
 
 - 旧`src/lib/seo.ts`は残っておらず、canonicalの並行実装も確認されなかった。
-- `BaseLayout`のlegacy `title` / `description` Propsは意図的な移行互換としてtestされているため、直ちに未使用コードとは判定しない。ただしv0.1で正式APIに含めるか、deprecatedとして削除時期を定める。
+- BaseLayoutのlegacy `title` / `description` Propsはpackage公開前に削除し、`site`と`meta`へ統一した。
 - `git-content/types.ts`と`src/internal/github-api/types.ts`にはGitHub error code、rate-limit diagnostics、error optionsの同等定義がある。公開型とinternal型のdriftを防ぐため、公開名を維持したまま単一の型定義元へ寄せることを推奨する。
 - `SiteHeader`、`SiteFooter`、sample pages、`src/config/site.ts`、`src/content.config.ts`はsample siteから参照されており未使用ではない。ただしlibrary配布物には含めず、exampleとしての位置づけを明記する。
 - `src/features/*`の内部moduleにはcross-file利用のためexportされたhelperがある。TypeScript上の不要exportとは断定しないが、package `exports`で到達不能にする。
@@ -181,13 +166,13 @@ QR code、管理画面Shell全体も、現在のv0.1 package完成とは切り�
 
 次をすべて満たした時点で、npm packageとしてv0.1完成と判定する。
 
-1. 5 featureのsubpathは確定済み。Astro Layout / CSSの公開pathが確定している。
+1. **完了:** 5 feature、Astro Layout、CSSの公開pathが確定している。
 2. **完了:** `exports`が公開subpathだけを許可し、root、共有internal、feature内部fileのdeep importを拒否する。
 3. **完了:** ESM artifactと`.d.ts`を再現可能に生成できるlibrary buildがある。
 4. **完了:** `files` allowlistによりtarballが必要なartifact、template、README、LICENSEだけを含む。
-5. `BaseLayout`がsample configやconsumer非保証のpath aliasに依存せず、SiteConfig注入契約とstyle責務が確定している。
-6. Custom Propertiesを含む公開CSS artifactと`sideEffects`方針が定義されている。
-7. 実package名を使う最小Astro consumer例があり、packed packageでcheckとstatic buildが成功する。
+5. **完了:** `BaseLayout`がsample configやconsumer非保証のpath aliasに依存せず、SiteConfig注入契約とstyle責務が確定している。
+6. **完了:** Custom Propertiesを含む公開CSS artifactと`sideEffects`方針が定義されている。
+7. **完了:** 実package名を使う最小Astro consumerがあり、packed packageでcheckとstatic buildが成功する。
 8. **完了:** installed package subpathを対象にしたruntime API、型、非公開境界testがある。
 9. 未使用`zod`の除去と現段階のAstro dependency区分は完了。Sass、version、license、repository情報など残るmetadataをrelease方針に合わせる。
 10. README、conventions、architecture、roadmap、API文書、ADRが確定したpackage境界と実装状態に一致する。
@@ -199,11 +184,10 @@ QR code、管理画面Shell全体も、現在のv0.1 package完成とは切り�
 
 優先順は次の最大5件とする。新しいB featureよりpackage完成を優先する。
 
-1. **P0-3の公開契約を決定する**: Astro Layout、CSS、Sass / Astro dependency、`sideEffects`、legacy Propsを確定する。
-2. **BaseLayoutとstyleを配布可能にする**: sample config依存とpath aliasを除き、SiteConfig注入とcompile済みCSSの責務を実装する。
-3. **最小Astro consumer fixtureを追加する**: packed packageからLayout、CSS、TypeScript featureを利用してcheck / buildする。
-4. **残るrelease文書とADRを同期する**: architecture、roadmap、extraction-plan、dependency / hosting判断を現在状態へ合わせる。
-5. **release metadataとCIを仕上げる**: repository情報、Node / npm version方針、pack検証のCI明示を整える。
+1. **残るrelease文書とADRを同期する**: architecture、roadmap、extraction-plan、dependency / hosting判断を現在状態へ合わせる。
+2. **release metadataを仕上げる**: repository情報、Node / npm version方針を整える。
+3. **package検証をCI契約として明記する**: library build、pack、minimal consumerの継続実行を固定する。
+4. **派生project consumer確認を行う**: A-05/A-06を含む実package利用を確認する。
 
 ## 監査時の検証記録
 

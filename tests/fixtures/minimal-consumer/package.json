@@ -1,0 +1,5 @@
+{
+  "name": "asc-minimal-consumer",
+  "private": true,
+  "type": "module"
+}

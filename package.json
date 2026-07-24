@@ -25,7 +25,10 @@
     "./deploy-status": {
       "types": "./package-dist/features/deploy-status/index.d.ts",
       "import": "./package-dist/features/deploy-status/index.js"
-    }
+    },
+    "./layouts/BaseLayout.astro": "./package-dist/layouts/BaseLayout.astro",
+    "./styles/theme.css": "./package-dist/styles/theme.css",
+    "./styles/global.css": "./package-dist/styles/global.css"
   },
   "files": [
     "package-dist/features/site-meta/",
@@ -34,17 +37,23 @@
     "package-dist/features/git-content/",
     "package-dist/features/deploy-status/",
     "package-dist/internal/github-api/",
+    "package-dist/layouts/",
+    "package-dist/styles/",
     "templates/deployment/cloudflare-pages/",
     "README.md",
     "LICENSE"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "astro dev",
-    "build:package": "tsc -p tsconfig.lib.json",
+    "build:package": "npm run build:package:ts && npm run build:package:assets",
+    "build:package:ts": "tsc -p tsconfig.lib.json",
+    "build:package:assets": "node scripts/build-package-assets.mjs",
     "build:site": "astro build",
     "prebuild": "npm run build:package",
     "build": "npm run build:site",

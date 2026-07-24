@@ -8,6 +8,8 @@
 
 派生プロジェクトへ公開する契約は、`--asc-`で始まるCSS Custom Propertiesとする。Sass partialのファイル構造やselector構成は公開APIにしない。
 
+compile済みCSSは`albasimia-ssg-core/styles/theme.css`と`albasimia-ssg-core/styles/global.css`から公開する。raw SCSSは配布せず、package版BaseLayoutは`global.css`を自動importする。
+
 ### テーマ別color token
 
 - `--asc-color-background-light` / `--asc-color-background-dark`

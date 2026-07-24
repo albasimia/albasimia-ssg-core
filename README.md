@@ -89,7 +89,27 @@ import { createGitHubClient } from "albasimia-ssg-core/git-content";
 import { createDeploymentStatusClient } from "albasimia-ssg-core/deploy-status";
 ```
 
-`BaseLayout.astro`とCSS / SCSSはまだpackage公開していません。公開subpath、ESM、型定義、private境界の詳細は[TypeScript featureのpackage公開](docs/package-exports.md)を参照してください。
+Astroページでは、packageのLayoutへ必須の`site`を渡します。Layoutはcompile済み`global.css`を自動で読み込むため、consumerへSassは不要です。
+
+```astro
+---
+import BaseLayout from "albasimia-ssg-core/layouts/BaseLayout.astro";
+import { defineSiteConfig } from "albasimia-ssg-core/site-meta";
+
+const site = defineSiteConfig({
+  name: "Example",
+  siteUrl: "https://example.com/",
+  description: "Example site",
+  locale: "ja",
+});
+---
+
+<BaseLayout site={site} meta={{ title: "Home" }}>
+  <main>...</main>
+</BaseLayout>
+```
+
+CSS単体のsubpathは`albasimia-ssg-core/styles/theme.css`と`albasimia-ssg-core/styles/global.css`です。raw SCSSは公開しません。詳細は[package公開方法](docs/package-exports.md)を参照してください。
 
 ### Repositoryを開発する
 
