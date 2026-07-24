@@ -51,7 +51,7 @@
 | A-04a | Light/Dark基礎テーマ | `src/styles/_theme.scss`、`src/styles/global.scss` | UI Foundationの`styles` | `--asc-` Custom Propertiesと`prefers-color-scheme`によるCSSのみの基礎テーマを提供する。色、font、spacingは派生側で上書きし、切替UI、JavaScript、永続化、theme-color metaの動的切替は含めない |
 | A-05 | YAMLの安全なparse・決定的なserialize | `src/domain/events/source-codec.ts`の`parseYamlSource`、`stringifyYamlSource` | Content Foundationの`features/content-source` | ファイル表示名を引数化し、単一Document、重複key禁止、alias制限、改行・indent規約を契約にする。Eventスキーマ検証は受け取らない |
 | A-06 | Markdown frontmatterの分離・再構築 | `src/domain/events/source-codec.ts`の`parseEventMarkdown`、`src/admin/editor-codec.ts`の`splitEventSource`相当 | Content Foundationの`features/content-source` | `event.md`という名前とイベント向けエラー文を外し、改行コード保持とfrontmatter更新を共通契約にする。schemaは派生側から渡す |
-| A-07 | GitHub Contents/Git Database APIクライアント | `functions/_lib/github.ts` | GitOps Foundationの`features/git-content` | owner、repo、branch、token、User-Agent、fetch実装を設定として受け取る。HTTP `Response`を直接throwせず、GitHubエラー型を返して実行環境のレスポンス変換と分離する |
+| A-07 | GitHub Contents/Git Database APIクライアント | `functions/_lib/github.ts` | GitOps Foundationの`features/git-content` | 必須注入のfetchとrepository設定を使い、Contentsおよびblob、tree、commit、ref操作を提供する。HTTP `Response`をthrowせず、request IDとrate limitを含む`GitHubApiError`へ正規化する |
 | A-08 | head SHAを用いた競合検知と複数ファイルの同一Commit保存 | `functions/api/admin/events/index.ts`、`functions/api/admin/events/[slug]/index.ts`、`functions/api/admin/events/[slug]/commit.ts`に重複するGit tree/blob/commit/ref処理 | GitOps Foundationの`features/git-content` | 入力を汎用的な`write/delete/copy`のファイル変更集合にする。イベントパス、テンプレート、検証、Commit文言、HTTP処理は派生側アダプターに残す。非force更新と基準Commit不一致を型で表す |
 | A-09 | GitHub Actions実行状態の取得 | `functions/api/admin/deployments/index.ts`、`functions/api/admin/deployments/[commitSha].ts` | GitOps FoundationまたはDeployment Foundationの`features/deploy-status` | workflow名、branch、取得件数を設定化し、GitHub APIの応答から共通の状態型へ変換する。`deploy.yml`固定と管理APIルートを含めない |
 | A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/`、`examples/`または`docs/deployment/` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
@@ -61,6 +61,8 @@ A-01とA-02の公開API、型定義、責務分担、テスト計画、実装状
 A-03の公開API、重複URL方針、Astro公式integrationとの比較、実装状況は`docs/sitemap-api.md`に記載する。Sitemap純粋関数、Astro endpoint adapter、単体・公開API・buildテストは2026-07-24に実装済みである。
 
 A-04aの公開CSS契約、light/dark解決、styleとBaseLayoutの責務分担、実装状況は`docs/theme-contract.md`に記載する。基礎token、OS設定連動、SCSS契約テストは2026-07-24に実装済みである。
+
+A-07の公開client、Repository設定、低レベルGit Database操作、error契約、A-08との境界は`docs/git-content-api.md`に記載する。注入fetchによるclient本体とmock単体テストは2026-07-25に実装済みである。
 
 A-05とA-06の公開API、型定義、テスト計画、実装状況は`docs/content-source-api-plan.md`に記載する。Codec本体と単体テストは2026-07-24に実装済みである。
 
