@@ -56,6 +56,8 @@
 | A-09 | GitHub Actions実行状態の取得 | `functions/api/admin/deployments/index.ts`、`functions/api/admin/deployments/[commitSha].ts` | GitOps FoundationまたはDeployment Foundationの`features/deploy-status` | workflow名、branch、取得件数を設定化し、GitHub APIの応答から共通の状態型へ変換する。`deploy.yml`固定と管理APIルートを含めない |
 | A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/`、`examples/`または`docs/deployment/` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
 
+A-01とA-02の公開API案、型定義、責務分担、テスト計画は`docs/site-foundation-api-plan.md`に記載する。
+
 A-05とA-06の公開API、型定義、テスト計画、実装状況は`docs/content-source-api-plan.md`に記載する。Codec本体と単体テストは2026-07-24に実装済みである。
 
 ### B — 条件付き候補
