@@ -62,7 +62,13 @@ ASCはページがindex可能か、OGP typeが何か、どのJSON-LDを出すか
 
 ### 入力型と解決済み型を分ける
 
-派生側が渡す`SiteConfigInput`、`PageMeta`と、head出力に必要な値が揃った`SiteConfig`、`ResolvedPageMeta`を分ける。`BaseLayout`は解決済み値だけを描画する。
+派生側が渡す`SiteConfigInput`、`PageMeta`と、head出力に必要な値が揃った内部描画モデル`ResolvedPageMeta`を分ける。`BaseLayout`は内部で解決済み値を生成して描画する。
+
+### `ResolvedPageMeta`を公開しない
+
+`ResolvedPageMeta`は`BaseLayout`の実装詳細であり、公開APIまたは公開型としてexportしない。`resolvePageMeta`も内部関数とし、派生プロジェクトから直接利用させない。
+
+これにより、meta tagの追加、OGPとTwitterの補完順序、JSON-LDの描画形式などを、派生側の破壊的変更なしに改善できる。派生プロジェクトの契約は入力側の`SiteConfig`と`PageMeta`、および`BaseLayout`のPropsまでとする。
 
 ### 無効化を明示できる
 
@@ -233,17 +239,11 @@ export function serializeRobots(
 ): string;
 
 export function serializeJsonLd(value: JsonLdObject): string;
-
-export function resolvePageMeta(
-  site: SiteConfig,
-  page: PageMeta,
-  context: PageMetaContext,
-): ResolvedPageMeta;
 ```
 
 Astro adapterは仮に`@asc/layouts/BaseLayout.astro`から公開する。packageの配布方式と`exports`確定時にsubpathを決定する。
 
-`resolvePageMeta`だけで全head値を解決できるようにし、派生プロジェクトが内部helperを組み合わせることを必須にしない。個別関数は設定検証、CLI、テストなどで同じ規則を利用するために公開する。
+`BaseLayout`は非公開の`resolvePageMeta`を使って全head値を一度に解決する。派生プロジェクトは内部resolverや`ResolvedPageMeta`を組み立てず、`PageMeta`を`BaseLayout`へ渡す。公開する個別関数は設定検証、CLI、テストなどで同じ基本規則を利用するためのものに限定する。
 
 ## 型定義案
 
@@ -390,11 +390,11 @@ export type PageMeta = PageMetaBase & (
   | { canonicalUrl: UrlInput; canonicalPath?: never }
 );
 
-export interface PageMetaContext {
+interface PageMetaContext {
   pathname: string;
 }
 
-export interface ResolvedOpenGraphMeta {
+interface ResolvedOpenGraphMeta {
   readonly type: string;
   readonly url: URL;
   readonly title: string;
@@ -405,7 +405,7 @@ export interface ResolvedOpenGraphMeta {
   readonly locale?: string;
 }
 
-export interface ResolvedTwitterMeta {
+interface ResolvedTwitterMeta {
   readonly card: "summary" | "summary_large_image";
   readonly title: string;
   readonly description: string;
@@ -415,7 +415,7 @@ export interface ResolvedTwitterMeta {
   readonly creator?: string;
 }
 
-export interface ResolvedPageMeta {
+interface ResolvedPageMeta {
   readonly title: string;
   readonly description: string;
   readonly canonicalUrl: URL;
@@ -430,6 +430,8 @@ export interface ResolvedPageMeta {
 ```
 
 `OpenGraphDefaults`と`TwitterDefaults`は各入力内のURLをabsolute `URL`へ解決し、文字列を検証したreadonly型として`index.ts`からexportする。
+
+`PageMetaContext`、`ResolvedOpenGraphMeta`、`ResolvedTwitterMeta`、`ResolvedPageMeta`は内部型であり、`index.ts`、package declaration、`BaseLayout`のPropsからexportしない。
 
 ## エラー方針
 
@@ -479,12 +481,12 @@ export class SiteMetaError extends Error {
 - favicon URL解決
 - theme-color、verification metaの検証
 - JSON-LDの検証と安全な直列化
-- `ResolvedPageMeta`の生成
+- 非公開`ResolvedPageMeta`の生成
 
 ### Astro `BaseLayout`
 
 - `Astro.url.pathname`を`PageMetaContext`として渡す
-- `resolvePageMeta`を1回呼ぶ
+- 非公開`resolvePageMeta`を1回呼ぶ
 - `lang`、charset、viewport、generator、title、meta、link、JSON-LD scriptを描画する
 - `slot`でページ本文を描画する
 - 必要な派生側head拡張のため、任意のnamed `head` slotを最後に描画する
@@ -666,8 +668,9 @@ const jsonLd = {
 1. 公開関数、`SiteMetaError`、関連型を`index.ts`からimportできる
 2. `SiteConfigInput`と`PageMeta`へDomain型が現れない
 3. 純粋関数のsignatureへAstro、DOM、Node.jsの型が現れない
-4. `ResolvedPageMeta`だけでBaseLayoutの全head出力を表現できる
-5. 内部ファイルへのdeep importを必要としない
+4. `ResolvedPageMeta`と`resolvePageMeta`が`index.ts`およびpackage declarationからexportされない
+5. `BaseLayout`のPropsが`SiteConfig`と`PageMeta`を受け取り、`ResolvedPageMeta`を要求しない
+6. 内部ファイルへのdeep importを必要としない
 
 ### `BaseLayout`統合テスト
 
@@ -685,16 +688,17 @@ const jsonLd = {
 
 実装に着手した場合は、次をすべて満たした時点でA-01、A-02を完了とする。
 
-1. `SiteConfig`、`PageMeta`、`ResolvedPageMeta`の責務が分離されている
+1. 公開入力の`SiteConfig`、`PageMeta`と非公開描画モデル`ResolvedPageMeta`の責務が分離されている
 2. title、canonical、robots、OGP、Twitter、JSON-LDの解決が純粋関数になっている
 3. Astro依存が`BaseLayout.astro`へ閉じている
 4. サイト固有値とDomain型がASC実装へ含まれない
 5. index可否、OGP type、JSON-LD内容を派生側が決定できる
 6. 公開APIを`index.ts`から利用できる
-7. error codeとpathがテストされている
-8. 純粋関数テストとBaseLayout統合テストが通る
-9. `npm run check`、`npm run test`、`npm run build`が通る
-10. 2つ目の派生プロジェクトで同じ公開APIを使用できる
+7. `ResolvedPageMeta`と`resolvePageMeta`が公開されていないことを型テストで保証する
+8. error codeとpathがテストされている
+9. 純粋関数テストとBaseLayout統合テストが通る
+10. `npm run check`、`npm run test`、`npm run build`が通る
+11. 2つ目の派生プロジェクトで同じ公開APIを使用できる
 
 ## 実装前の決定事項
 
