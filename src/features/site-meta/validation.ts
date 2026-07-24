@@ -1,4 +1,4 @@
-import { SiteMetaError } from "./errors";
+import { SiteMetaError } from "./errors.js";
 import type {
   FaviconInput,
   ResolvedFavicon,
@@ -6,7 +6,7 @@ import type {
   ThemeColorMeta,
   UrlInput,
   VerificationMeta,
-} from "./types";
+} from "./types.js";
 
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
 

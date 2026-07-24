@@ -1,5 +1,5 @@
-import { SitemapError } from "./errors";
-import type { SitemapUrlInput } from "./types";
+import { SitemapError } from "./errors.js";
+import type { SitemapUrlInput } from "./types.js";
 
 const XML_NAMESPACE = "http://www.sitemaps.org/schemas/sitemap/0.9";
 

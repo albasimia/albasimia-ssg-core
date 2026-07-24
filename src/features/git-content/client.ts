@@ -1,6 +1,6 @@
-import { requiredInputText, resolveGitHubClientConfig } from "./config";
-import { GitHubApiError } from "./errors";
-import { createGitHubRequester } from "./request";
+import { requiredInputText, resolveGitHubClientConfig } from "./config.js";
+import { GitHubApiError } from "./errors.js";
+import { createGitHubRequester } from "./request.js";
 import type {
   CreateGitHubBlobInput,
   CreateGitHubCommitInput,
@@ -16,7 +16,7 @@ import type {
   GitHubRepositoryInfo,
   GitHubTree,
   UpdateGitHubRefInput,
-} from "./types";
+} from "./types.js";
 
 export function createGitHubClient(input: GitHubClientConfig): GitHubClient {
   const config = resolveGitHubClientConfig(input);

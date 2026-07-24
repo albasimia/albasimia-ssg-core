@@ -70,6 +70,29 @@ ASCは、次の機能を提供しません。
 
 ## セットアップ
 
+### TypeScript featureを利用する
+
+```sh
+npm install albasimia-ssg-core
+```
+
+ASCはroot exportを設けず、機能境界ごとのsubpathを公開します。
+
+```ts
+import {
+  defineSiteConfig,
+  type PageMeta,
+} from "albasimia-ssg-core/site-meta";
+import { createSitemapXml } from "albasimia-ssg-core/sitemap";
+import { parseYamlSource } from "albasimia-ssg-core/content-source";
+import { createGitHubClient } from "albasimia-ssg-core/git-content";
+import { createDeploymentStatusClient } from "albasimia-ssg-core/deploy-status";
+```
+
+`BaseLayout.astro`とCSS / SCSSはまだpackage公開していません。公開subpath、ESM、型定義、private境界の詳細は[TypeScript featureのpackage公開](docs/package-exports.md)を参照してください。
+
+### Repositoryを開発する
+
 ```sh
 npm install
 npm run dev
@@ -100,6 +123,7 @@ ASCへ追加する機能は、少なくとも複数の派生プロジェクト�
 - [アーキテクチャ](docs/architecture.md)
 - [設計規約](docs/conventions.md)
 - [ロードマップ](docs/roadmap.md)
+- [TypeScript featureのpackage公開](docs/package-exports.md)
 - [Cloudflare Pagesデプロイ雛形](docs/deployment/cloudflare-pages.md)
 - [ADR](docs/adr/)
 

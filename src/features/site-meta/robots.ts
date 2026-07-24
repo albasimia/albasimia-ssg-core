@@ -1,5 +1,5 @@
-import { SiteMetaError } from "./errors";
-import type { SiteMetaErrorCode } from "./types";
+import { SiteMetaError } from "./errors.js";
+import type { SiteMetaErrorCode } from "./types.js";
 
 export function normalizeRobots(
   directives: readonly string[],

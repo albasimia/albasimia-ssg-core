@@ -112,14 +112,16 @@ GitOps、SEO、アセット処理など、複数ファイルで構成される�
 内部ファイルへの直接importを前提としない。
 
 ```ts
-import { createSiteConfig } from "@asc/config";
+import { defineSiteConfig } from "albasimia-ssg-core/site-meta";
 ```
 
 次のような深いimportは避ける。
 
 ```ts
-import { createSiteConfig } from "@asc/config/internal/create-site-config";
+import { resolvePageMeta } from "albasimia-ssg-core/site-meta/resolve";
 ```
+
+package rootには全featureを集約せず、`package.json`の`exports`に列挙した明示的subpathだけを公開する。公開pathと配布境界は`docs/package-exports.md`に従う。
 
 ## 設定と固有値
 

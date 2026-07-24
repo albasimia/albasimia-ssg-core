@@ -1,6 +1,6 @@
-import type { PageMetaBase, TitlePolicy } from "./types";
-import { SiteMetaError } from "./errors";
-import { requiredText } from "./validation";
+import type { PageMetaBase, TitlePolicy } from "./types.js";
+import { SiteMetaError } from "./errors.js";
+import { requiredText } from "./validation.js";
 
 export function createPageTitle(
   page: Pick<PageMetaBase, "title" | "titleMode">,

@@ -1,9 +1,9 @@
-export { createCanonicalUrl } from "./canonical";
-export { defineSiteConfig } from "./config";
-export { SiteMetaError } from "./errors";
-export { serializeJsonLd } from "./json-ld";
-export { serializeRobots } from "./robots";
-export { createPageTitle } from "./title";
+export { createCanonicalUrl } from "./canonical.js";
+export { defineSiteConfig } from "./config.js";
+export { SiteMetaError } from "./errors.js";
+export { serializeJsonLd } from "./json-ld.js";
+export { serializeRobots } from "./robots.js";
+export { createPageTitle } from "./title.js";
 export type {
   FaviconInput,
   JsonLdObject,
@@ -27,4 +27,4 @@ export type {
   TwitterPageMeta,
   UrlInput,
   VerificationMeta,
-} from "./types";
+} from "./types.js";

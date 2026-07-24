@@ -1,9 +1,9 @@
-export { ContentSourceError } from "./errors";
+export { ContentSourceError } from "./errors.js";
 export {
   parseMarkdownFrontmatter,
   stringifyMarkdownFrontmatter,
-} from "./frontmatter";
-export { parseYamlSource, stringifyYamlSource } from "./yaml";
+} from "./frontmatter.js";
+export { parseYamlSource, stringifyYamlSource } from "./yaml.js";
 export type {
   ContentSourceErrorCode,
   ContentSourceErrorOptions,
@@ -11,4 +11,4 @@ export type {
   ParseSourceOptions,
   SourceNewline,
   StringifyMarkdownFrontmatterInput,
-} from "./types";
+} from "./types.js";

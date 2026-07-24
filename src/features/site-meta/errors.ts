@@ -1,4 +1,4 @@
-import type { SiteMetaErrorCode, SiteMetaErrorOptions } from "./types";
+import type { SiteMetaErrorCode, SiteMetaErrorOptions } from "./types.js";
 
 export class SiteMetaError extends Error {
   readonly code: SiteMetaErrorCode;

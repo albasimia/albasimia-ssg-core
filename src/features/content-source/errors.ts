@@ -1,7 +1,7 @@
 import type {
   ContentSourceErrorCode,
   ContentSourceErrorOptions,
-} from "./types";
+} from "./types.js";
 
 export class ContentSourceError extends Error {
   readonly code: ContentSourceErrorCode;

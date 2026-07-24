@@ -1,6 +1,6 @@
 # Site Foundation 公開API計画
 
-- 状態: 実装済み（package公開subpathは未確定）
+- 状態: Site Meta実装・package公開済み、BaseLayout package公開はP0-3で保留
 - 対象: `docs/extraction-plan.md`のA-01、A-02のみ
 - 作成日: 2026-07-24
 
@@ -20,7 +20,7 @@
 - 旧`src/lib/seo.ts`をSite Metaへ統合し、canonical実装の重複を解消
 - `tests/site-meta/`に純粋関数、公開境界、BaseLayout buildのテストを追加
 
-`@asc/site-meta`と`@asc/layouts/BaseLayout.astro`というpackage公開subpathは配布方式とともに別途決定する。現時点の公開境界は`src/features/site-meta/index.ts`であり、`ResolvedPageMeta`と`resolvePageMeta`はそこからexportしない。
+Site Metaのsource境界は`src/features/site-meta/index.ts`、package公開subpathは`albasimia-ssg-core/site-meta`とする。`ResolvedPageMeta`と`resolvePageMeta`はそこからexportしない。`BaseLayout.astro`のpackage公開はP0-3で扱い、現時点のpackageには含めない。
 
 ## 対象範囲
 
@@ -234,7 +234,7 @@ verification: [
 
 ## 公開API案
 
-純粋関数の公開subpathは仮に`@asc/site-meta`とする。
+純粋関数の公開subpathは`albasimia-ssg-core/site-meta`とする。
 
 ```ts
 export function defineSiteConfig(input: SiteConfigInput): SiteConfig;
@@ -253,7 +253,7 @@ export function serializeRobots(
 export function serializeJsonLd(value: JsonLdObject): string;
 ```
 
-Astro adapterは仮に`@asc/layouts/BaseLayout.astro`から公開する。packageの配布方式と`exports`確定時にsubpathを決定する。
+Astro adapterのpackage公開pathはP0-3で決定する。今回確定したTypeScript featureの`exports`には`BaseLayout.astro`を含めない。
 
 `BaseLayout`は非公開の`resolvePageMeta`を使って全head値を一度に解決する。派生プロジェクトは内部resolverや`ResolvedPageMeta`を組み立てず、`PageMeta`を`BaseLayout`へ渡す。公開する個別関数は設定検証、CLI、テストなどで同じ基本規則を利用するためのものに限定する。
 
@@ -518,7 +518,7 @@ export class SiteMetaError extends Error {
 ### サイト設定
 
 ```ts
-import { defineSiteConfig } from "@asc/site-meta";
+import { defineSiteConfig } from "albasimia-ssg-core/site-meta";
 
 export const siteConfig = defineSiteConfig({
   name: "Example Archive",
@@ -560,7 +560,7 @@ export const siteConfig = defineSiteConfig({
 
 ```astro
 ---
-import BaseLayout from "@asc/layouts/BaseLayout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import { siteConfig } from "../config/site";
 ---
 
@@ -580,7 +580,7 @@ import { siteConfig } from "../config/site";
 
 ```astro
 ---
-import BaseLayout from "@asc/layouts/BaseLayout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import { siteConfig } from "../config/site";
 
 const allowIndexing = page.data.visibility === "public";
@@ -714,7 +714,7 @@ const jsonLd = {
 
 ## 実装時の決定
 
-- package export pathは未確定とし、featureの`index.ts`を現時点の公開境界とする
+- Site Metaは`albasimia-ssg-core/site-meta`から公開し、BaseLayoutのpackage exportはP0-3まで保留する
 - named `head` slotは共通metaの後に描画する公開拡張点とする
 - JSON-LDは新規依存を追加せず、独自の再帰検査でruntime validationする
 - 旧`SiteConfig`と`createCanonicalUrl`は一括移行し、BaseLayoutの`title`、`description` Propsだけは移行互換のため維持する

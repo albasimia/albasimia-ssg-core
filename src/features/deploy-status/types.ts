@@ -1,4 +1,4 @@
-import type { GitHubApiErrorCode, GitHubRateLimitDiagnostics } from "../../internal/github-api/types";
+import type { GitHubApiErrorCode, GitHubRateLimitDiagnostics } from "../../internal/github-api/types.js";
 
 export type DeploymentStatusFetch = (
   input: string,

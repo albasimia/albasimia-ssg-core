@@ -1,1 +1,1 @@
-export { GitHubApiError } from "../../internal/github-api/errors";
+export { GitHubApiError } from "../../internal/github-api/errors.js";

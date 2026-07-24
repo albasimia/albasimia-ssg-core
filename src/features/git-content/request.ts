@@ -1,8 +1,8 @@
-import type { ResolvedGitHubClientConfig } from "./config";
+import type { ResolvedGitHubClientConfig } from "./config.js";
 import {
   createGitHubApiRequester,
   type GitHubApiRequester,
-} from "../../internal/github-api/request";
+} from "../../internal/github-api/request.js";
 
 const API_ROOT = "https://api.github.com";
 

@@ -3,6 +3,9 @@
 ## 現在の実装状況
 
 - Deployment Foundation: Cloudflare Pages向けGitHub Actions / Wrangler雛形を2026-07-25に実装済み
+- Extraction A-01〜A-10: repository内の機能実装・単体テスト・個別文書を実装済み
+- Package Foundation: 5つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを2026-07-25に実装済み
+- Package Foundationの残作業: BaseLayout / CSS公開と最小Astro consumerはP0-3以降で扱う
 
 ## v0.1 Foundation
 

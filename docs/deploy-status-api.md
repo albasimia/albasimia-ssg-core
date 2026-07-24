@@ -1,6 +1,6 @@
 # Deployment Status 公開API
 
-- 状態: 実装済み（package公開subpathは未確定）
+- 状態: 実装済み（`albasimia-ssg-core/deploy-status`）
 - 対象: `docs/extraction-plan.md`のA-09
 - 実装日: 2026-07-25
 
@@ -10,7 +10,7 @@ GitHub Actions workflow runsを、特定のworkflow、branch、commit SHAに基�
 
 ## 公開API
 
-現時点の公開境界は`src/features/deploy-status/index.ts`とする。
+source上の公開境界は`src/features/deploy-status/index.ts`、package公開subpathは`albasimia-ssg-core/deploy-status`とする。
 
 ```ts
 export function createDeploymentStatusClient(

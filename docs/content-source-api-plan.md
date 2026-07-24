@@ -1,6 +1,6 @@
 # Content Source Codec 公開API計画
 
-- 状態: 実装済み（package公開subpathは未確定）
+- 状態: 実装済み（`albasimia-ssg-core/content-source`）
 - 対象: `docs/extraction-plan.md`のA-05、A-06のみ
 - 作成日: 2026-07-24
 
@@ -19,7 +19,7 @@ YAML sourceとYAML frontmatter付きMarkdownを、Node.js、Astro、ブラウザ
 - `yaml` packageをruntime dependencyへ追加
 - `docs/adr/ADR-0006-yaml-codec.md`で依存追加と標準契約を記録
 
-`@asc/content-source`というpackage公開subpathは配布方式とともに別途決定する。現時点の公開境界は`src/features/content-source/index.ts`とする。
+source上の公開境界は`src/features/content-source/index.ts`、package公開subpathは`albasimia-ssg-core/content-source`とする。
 
 ## 対象範囲
 
@@ -104,7 +104,7 @@ import {
   parseYamlSource,
   stringifyMarkdownFrontmatter,
   stringifyYamlSource,
-} from "@asc/content-source";
+} from "albasimia-ssg-core/content-source";
 ```
 
 ## 公開API案
@@ -344,7 +344,7 @@ const output = stringifyMarkdownFrontmatter({
 4. `parseYamlSource`と`parseMarkdownFrontmatter`の戻り値が`unknown`を含み、validatorなしで任意Domain型として利用できない
 5. 内部ファイルをimportしなくても全ユースケースを表現できる
 
-型契約は`expectTypeOf`またはコンパイル専用fixtureで検証する。packageの`exports`を設定する段階では、公開subpathから同じテストを追加する。
+型契約はsource境界の`expectTypeOf`に加え、packed packageをinstallしたconsumerから公開subpathのTypeScript解決を検証する。
 
 ### 移行互換テスト
 
@@ -359,7 +359,7 @@ ASC側では汎用Codecの契約だけを検証する。Event Bundle全体と既
 
 ## 完了条件
 
-実装に着手した場合は、次をすべて満たした時点でA-05、A-06を完了とする。
+次をすべて満たした時点でA-05、A-06を完了とする。
 
 1. 公開APIが4関数、共通エラーclass、関連する公開型に限定されている
 2. `index.ts`以外へのdeep importを必要としない
@@ -371,11 +371,11 @@ ASC側では汎用Codecの契約だけを検証する。Event Bundle全体と既
 8. `npm run check`、`npm run test`、`npm run build`が通る
 9. `catharsiswatari-events`側のconsumer testが通る
 
-## 実装前の決定事項
+## 実装時の決定事項
 
 ### `yaml` packageの採用
 
-既存実装は`yaml` packageを利用しているが、ASCにはまだ依存として追加されていない。外部依存の追加は`docs/conventions.md`によりADR対象であるため、実装前に次をADRで決定する。
+`yaml` packageをruntime dependencyとして追加した。外部依存の追加は`docs/conventions.md`によりADR対象であるため、次をADRで決定した。
 
 - `yaml` packageをContent Foundationの実行時依存へ追加すること
 - Node.jsとブラウザの両方を対象にすること
@@ -384,6 +384,6 @@ ASC側では汎用Codecの契約だけを検証する。Event Bundle全体と既
 
 ### packageの公開subpath
 
-`@asc/content-source`はこの文書上の仮称である。ASCの配布方式と`package.json`の`exports`を別途決め、確定したsubpathへ置き換える。
+`package.json`は`albasimia-ssg-core/content-source`を明示的にexportする。JavaScriptと`.d.ts`は`npm run build:package`で生成し、sourceや内部fileへのdeep importは公開しない。配布方針は`docs/package-exports.md`に記載する。
 
-`yaml` packageの採用事項は`docs/adr/ADR-0006-yaml-codec.md`で決定済みである。package公開subpathは引き続き未決定とする。
+`yaml` packageの採用事項は`docs/adr/ADR-0006-yaml-codec.md`で決定済みである。

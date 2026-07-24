@@ -1,6 +1,6 @@
 import YAML from "yaml";
-import { ContentSourceError } from "./errors";
-import type { ParseSourceOptions } from "./types";
+import { ContentSourceError } from "./errors.js";
+import type { ParseSourceOptions } from "./types.js";
 
 export function parseYamlSource(
   source: string,

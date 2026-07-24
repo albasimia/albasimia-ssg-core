@@ -1,5 +1,5 @@
-import { SiteMetaError } from "./errors";
-import type { JsonLdObject } from "./types";
+import { SiteMetaError } from "./errors.js";
+import type { JsonLdObject } from "./types.js";
 
 export function serializeJsonLd(value: JsonLdObject): string {
   if (Array.isArray(value)) throw invalidJsonLd("jsonLd");

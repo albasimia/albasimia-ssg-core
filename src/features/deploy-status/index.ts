@@ -1,5 +1,5 @@
-export { createDeploymentStatusClient } from "./client";
-export { GitHubApiError } from "../../internal/github-api/errors";
+export { createDeploymentStatusClient } from "./client.js";
+export { GitHubApiError } from "../../internal/github-api/errors.js";
 export type {
   DeploymentRateLimitDiagnostics,
   DeploymentRun,
@@ -13,4 +13,4 @@ export type {
   DeploymentWorkflow,
   GetDeploymentRunForCommitOptions,
   ListDeploymentRunsOptions,
-} from "./types";
+} from "./types.js";

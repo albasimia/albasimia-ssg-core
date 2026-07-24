@@ -1,10 +1,10 @@
-import { GitFileCommitError } from "./commit-errors";
+import { GitFileCommitError } from "./commit-errors.js";
 import type {
   CommitGitFileChangesInput,
   GitFileChange,
   GitFileMode,
-} from "./commit-types";
-import type { GitHubSignature } from "./types";
+} from "./commit-types.js";
+import type { GitHubSignature } from "./types.js";
 
 export interface ValidatedCommitGitFileChangesInput {
   readonly client: CommitGitFileChangesInput["client"];

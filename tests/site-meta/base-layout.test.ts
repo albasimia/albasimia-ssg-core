@@ -12,7 +12,7 @@ let aboutHtml = "";
 let sitemapXml = "";
 
 beforeAll(() => {
-  execFileSync("npm", ["run", "build", "--", "--outDir", outputDirectory], {
+  execFileSync("npm", ["run", "build:site", "--", "--outDir", outputDirectory], {
     cwd: projectRoot,
     encoding: "utf8",
     stdio: "pipe",

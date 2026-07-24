@@ -1,9 +1,9 @@
-import { GitHubApiError } from "./errors";
+import { GitHubApiError } from "./errors.js";
 import type {
   GitHubClientConfig,
   GitHubFetch,
   GitHubRepositoryConfig,
-} from "./types";
+} from "./types.js";
 
 export interface ResolvedGitHubClientConfig {
   readonly repository: GitHubRepositoryConfig;

@@ -1,5 +1,5 @@
-import { GitHubApiError } from "../../internal/github-api/errors";
-import { createGitHubApiRequester } from "../../internal/github-api/request";
+import { GitHubApiError } from "../../internal/github-api/errors.js";
+import { createGitHubApiRequester } from "../../internal/github-api/request.js";
 import type {
   DeploymentRun,
   DeploymentRunConclusion,
@@ -8,7 +8,7 @@ import type {
   DeploymentStatusClientConfig,
   GetDeploymentRunForCommitOptions,
   ListDeploymentRunsOptions,
-} from "./types";
+} from "./types.js";
 
 const API_ROOT = "https://api.github.com";
 const DEFAULT_LIMIT = 20;

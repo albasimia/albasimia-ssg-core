@@ -1,17 +1,17 @@
-import { GitHubApiError } from "./errors";
-import { GitFileCommitError } from "./commit-errors";
+import { GitHubApiError } from "./errors.js";
+import { GitFileCommitError } from "./commit-errors.js";
 import type {
   CommitGitFileChangesInput,
   CommitGitFileChangesResult,
   GitFileChange,
   GitFileMode,
-} from "./commit-types";
-import { validateCommitGitFileChangesInput } from "./commit-validation";
+} from "./commit-types.js";
+import { validateCommitGitFileChangesInput } from "./commit-validation.js";
 import type {
   GitHubTree,
   GitHubTreeEntry,
   GitHubTreeEntryInput,
-} from "./types";
+} from "./types.js";
 
 export async function commitGitFileChanges(
   input: CommitGitFileChangesInput,

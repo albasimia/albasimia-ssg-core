@@ -1,8 +1,8 @@
-import { GitHubApiError } from "./errors";
+import { GitHubApiError } from "./errors.js";
 import type {
   GitHubApiRequestConfig,
   GitHubRateLimitDiagnostics,
-} from "./types";
+} from "./types.js";
 
 const API_VERSION = "2022-11-28";
 const MAX_DIAGNOSTIC_LENGTH = 2_000;

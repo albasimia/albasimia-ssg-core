@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "outDir": "./package-dist",
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  "include": [
+    "src/features/site-meta/index.ts",
+    "src/features/sitemap/index.ts",
+    "src/features/content-source/index.ts",
+    "src/features/git-content/index.ts",
+    "src/features/deploy-status/index.ts"
+  ]
+}

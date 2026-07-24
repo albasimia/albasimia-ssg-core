@@ -1,11 +1,11 @@
-import { ContentSourceError } from "./errors";
+import { ContentSourceError } from "./errors.js";
 import type {
   ParsedMarkdownFrontmatter,
   ParseSourceOptions,
   SourceNewline,
   StringifyMarkdownFrontmatterInput,
-} from "./types";
-import { parseYamlSource, stringifyYamlSource } from "./yaml";
+} from "./types.js";
+import { parseYamlSource, stringifyYamlSource } from "./yaml.js";
 
 export function parseMarkdownFrontmatter(
   source: string,

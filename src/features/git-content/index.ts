@@ -1,7 +1,7 @@
-export { createGitHubClient } from "./client";
-export { commitGitFileChanges } from "./commit-changes";
-export { GitFileCommitError } from "./commit-errors";
-export { GitHubApiError } from "./errors";
+export { createGitHubClient } from "./client.js";
+export { commitGitFileChanges } from "./commit-changes.js";
+export { GitFileCommitError } from "./commit-errors.js";
+export { GitHubApiError } from "./errors.js";
 export type {
   CommitGitFileChangesInput,
   CommitGitFileChangesResult,
@@ -16,7 +16,7 @@ export type {
   GitFileWriteChange,
   GitHeadConflictResult,
   GitRefUpdateConflictResult,
-} from "./commit-types";
+} from "./commit-types.js";
 export type {
   CreateGitHubBlobInput,
   CreateGitHubCommitInput,
@@ -44,4 +44,4 @@ export type {
   GitHubTreeEntryMode,
   GitHubTreeEntryType,
   UpdateGitHubRefInput,
-} from "./types";
+} from "./types.js";

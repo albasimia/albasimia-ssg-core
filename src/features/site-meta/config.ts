@@ -1,11 +1,11 @@
-import { SiteMetaError } from "./errors";
-import { normalizeRobots } from "./robots";
+import { SiteMetaError } from "./errors.js";
+import { normalizeRobots } from "./robots.js";
 import type {
   OpenGraphDefaults,
   SiteConfig,
   SiteConfigInput,
   TwitterDefaults,
-} from "./types";
+} from "./types.js";
 import {
   optionalText,
   requiredText,
@@ -13,7 +13,7 @@ import {
   resolveHttpUrl,
   validateThemeColors,
   validateVerification,
-} from "./validation";
+} from "./validation.js";
 
 export function defineSiteConfig(input: SiteConfigInput): SiteConfig {
   const name = requiredText(input.name, "name", "SITE_CONFIG_INVALID");

@@ -1,22 +1,22 @@
-import { createCanonicalUrl, resolveCanonicalOverride } from "./canonical";
-import { SiteMetaError } from "./errors";
-import { serializeJsonLd } from "./json-ld";
-import { normalizeRobots } from "./robots";
-import { createPageTitle } from "./title";
+import { createCanonicalUrl, resolveCanonicalOverride } from "./canonical.js";
+import { SiteMetaError } from "./errors.js";
+import { serializeJsonLd } from "./json-ld.js";
+import { normalizeRobots } from "./robots.js";
+import { createPageTitle } from "./title.js";
 import type {
   PageMeta,
   ResolvedFavicon,
   SiteConfig,
   ThemeColorMeta,
   VerificationMeta,
-} from "./types";
+} from "./types.js";
 import {
   optionalText,
   requiredText,
   resolveFavicons,
   resolveHttpUrl,
   validateThemeColors,
-} from "./validation";
+} from "./validation.js";
 
 interface PageMetaContext {
   pathname: string;

@@ -2,7 +2,7 @@ import type {
   GitHubClient,
   GitHubSignature,
   GitHubTreeEntryMode,
-} from "./types";
+} from "./types.js";
 
 export type GitFileMode = Extract<GitHubTreeEntryMode, "100644" | "100755" | "120000">;
 

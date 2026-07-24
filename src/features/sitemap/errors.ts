@@ -1,4 +1,4 @@
-import type { SitemapErrorCode, SitemapErrorOptions } from "./types";
+import type { SitemapErrorCode, SitemapErrorOptions } from "./types.js";
 
 export class SitemapError extends Error {
   readonly code: SitemapErrorCode;

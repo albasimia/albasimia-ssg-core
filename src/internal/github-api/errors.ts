@@ -2,7 +2,7 @@ import type {
   GitHubApiErrorCode,
   GitHubApiErrorOptions,
   GitHubRateLimitDiagnostics,
-} from "./types";
+} from "./types.js";
 
 export class GitHubApiError extends Error {
   readonly code: GitHubApiErrorCode;

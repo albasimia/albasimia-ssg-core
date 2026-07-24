@@ -1,7 +1,7 @@
 import type {
   GitFileCommitErrorCode,
   GitFileCommitErrorOptions,
-} from "./commit-types";
+} from "./commit-types.js";
 
 export class GitFileCommitError extends Error {
   readonly code: GitFileCommitErrorCode;

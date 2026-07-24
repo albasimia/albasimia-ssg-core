@@ -1,6 +1,6 @@
 # GitHub Content Client 公開API
 
-- 状態: 実装済み（package公開subpathは未確定）
+- 状態: 実装済み（`albasimia-ssg-core/git-content`）
 - 対象: `docs/extraction-plan.md`のA-07、A-08
 - 実装日: 2026-07-25
 
@@ -10,7 +10,7 @@ GitHub REST APIのRepository、Contents、Git Database操作を、特定runtime�
 
 ## 公開境界
 
-現時点の公開境界は`src/features/git-content/index.ts`とする。
+source上の公開境界は`src/features/git-content/index.ts`、package公開subpathは`albasimia-ssg-core/git-content`とする。
 
 ```ts
 export function createGitHubClient(

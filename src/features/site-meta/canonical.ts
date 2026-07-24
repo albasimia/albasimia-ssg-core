@@ -1,6 +1,6 @@
-import { SiteMetaError } from "./errors";
-import type { UrlInput } from "./types";
-import { resolveHttpUrl } from "./validation";
+import { SiteMetaError } from "./errors.js";
+import type { UrlInput } from "./types.js";
+import { resolveHttpUrl } from "./validation.js";
 
 export function createCanonicalUrl(pathname: string, siteUrl: URL): URL {
   if (!pathname.startsWith("/") || pathname.startsWith("//") || pathname.includes("#")) {
