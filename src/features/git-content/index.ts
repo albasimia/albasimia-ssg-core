@@ -1,5 +1,22 @@
 export { createGitHubClient } from "./client";
+export { commitGitFileChanges } from "./commit-changes";
+export { GitFileCommitError } from "./commit-errors";
 export { GitHubApiError } from "./errors";
+export type {
+  CommitGitFileChangesInput,
+  CommitGitFileChangesResult,
+  CommittedGitFileChangesResult,
+  GitFileChange,
+  GitFileCommitConflict,
+  GitFileCommitErrorCode,
+  GitFileCommitErrorOptions,
+  GitFileCopyChange,
+  GitFileDeleteChange,
+  GitFileMode,
+  GitFileWriteChange,
+  GitHeadConflictResult,
+  GitRefUpdateConflictResult,
+} from "./commit-types";
 export type {
   CreateGitHubBlobInput,
   CreateGitHubCommitInput,

@@ -1,12 +1,12 @@
 # GitHub Content Client 公開API
 
 - 状態: 実装済み（package公開subpathは未確定）
-- 対象: `docs/extraction-plan.md`のA-07のみ
+- 対象: `docs/extraction-plan.md`のA-07、A-08
 - 実装日: 2026-07-25
 
 ## 目的
 
-GitHub REST APIのRepository、Contents、Git Database操作を、特定runtimeや派生プロジェクトのDomainに依存しないclientとして提供する。A-08が利用する低レベルGit操作までを対象とし、複数変更を同一Commitへまとめる手順、競合判定、commit message生成は扱わない。
+GitHub REST APIのRepository、Contents、Git Database操作を、特定runtimeや派生プロジェクトのDomainに依存しないclientとして提供する。低レベルclientに加え、汎用的なfile変更集合を同一CommitへまとめるA-08の高レベルoperationを提供する。
 
 ## 公開境界
 
@@ -16,6 +16,10 @@ GitHub REST APIのRepository、Contents、Git Database操作を、特定runtime�
 export function createGitHubClient(
   config: GitHubClientConfig,
 ): GitHubClient;
+
+export function commitGitFileChanges(
+  input: CommitGitFileChangesInput,
+): Promise<CommitGitFileChangesResult>;
 
 export class GitHubApiError extends Error {
   readonly code: GitHubApiErrorCode;
@@ -110,21 +114,82 @@ rate limitの判断と再試行は呼び出し側の責務とし、clientは暗�
 - GitHub error bodyにtoken文字列が含まれた場合も`[REDACTED]`へ置換する
 - 診断文字列は過大なbodyを保持しないよう長さを制限する
 
-## A-08との境界
+## A-08: 同一Commit保存
 
-A-07はblob、tree、commit、refの個別操作だけを提供する。次はA-08で実装する。
+`commitGitFileChanges`は既存`GitHubClient`だけを利用し、raw HTTP requestや低レベルGitHub API処理を重複実装しない。
 
-- 複数file変更の集約
-- branch headを基準にした競合検知
-- blob群、tree、commit、ref更新の一連の手順
-- non-force更新失敗の結果型
-- commit authorとmessageのpolicy
-- write、delete、copyなどの変更集合
+```ts
+interface CommitGitFileChangesInput {
+  client: GitHubClient;
+  expectedHeadSha: string;
+  message: string;
+  author: GitHubSignature;
+  changes: readonly GitFileChange[];
+}
+
+type GitFileChange =
+  | { type: "write"; path: string; content: string; encoding?: "utf-8" | "base64"; mode?: GitFileMode }
+  | { type: "delete"; path: string }
+  | { type: "copy"; sourcePath: string; path: string; mode?: GitFileMode };
+```
+
+commit messageとauthorは呼び出し側が決定する。operationはfile内容、path、変更理由からmessageやauthorを推測しない。
+
+### 実行順序
+
+1. branch headを取得する
+2. head SHAと`expectedHeadSha`を比較する
+3. base commitとrecursive base treeを取得する
+4. writeごとにblobを作成する
+5. copy元をbase treeから解決する
+6. write、delete、copyを1つのtreeへまとめる
+7. base headをparentとするcommitを1つ作成する
+8. `force: false`でbranch refを更新する
+
+expected SHA不一致では手順2で`head-check` conflictを返し、commit、tree、blob、refの書込methodを呼ばない。
+
+### 変更規則
+
+- writeは新しいblobを作成する
+- deleteはtree entryの`sha: null`として表現する
+- copyは基準commitのrecursive treeからsource blob SHAを解決し、新しいblobを作らず再利用する
+- copy元は同じ変更集合によるwrite後ではなく、常に基準commitから解決する
+- 変更先pathの入力順をtree entryと結果の`changedPaths`へ維持する
+- 空変更、同一変更先pathの重複、absolute path、空segment、`.`、`..`、backslash、制御文字を含むpathを拒否する
+- recursive treeがtruncatedの場合は安全にcopy元を解決できないため失敗する
+
+### 結果と競合
+
+成功時は次を返す。
+
+```ts
+interface CommittedGitFileChangesResult {
+  status: "committed";
+  baseHeadSha: string;
+  commitSha: string;
+  treeSha: string;
+  changedPaths: readonly string[];
+}
+```
+
+競合はthrowせず、`status: "conflict"`のunionとして返す。
+
+- `stage: "head-check"`: 書込開始前のexpected SHA不一致。expectedとactual SHAを保持する
+- `stage: "ref-update"`: non-force ref更新がGitHubの409または422で拒否された状態。base、作成済みcommit/tree、変更path、GitHub status、任意のrequest IDを保持する
+
+blob、tree、commitなどの通常のGitHub API失敗は既存`GitHubApiError`をそのまま伝播する。入力とbase tree条件の失敗は`GitFileCommitError`で表す。error messageへtokenまたはfile contentを含めない。
+
+### Branch状態の境界
+
+branchを変更する操作は最後の`updateRef`だけである。blob、tree、commitの作成途中で失敗してもrefは更新されず、branch headは変わらない。ref更新競合時には到達不能なGit objectが作成済みの場合があるが、branchから参照されない。ref更新のtransport失敗は更新成否を断定できないため、競合へ変換せず元の`GitHubApiError`を伝播する。
+
+HTTP responseへの変換、競合時のUI文言、retry、commit message policyは派生側adapterの責務とする。
 
 ## テスト
 
 - `tests/git-content/client.test.ts`: 設定、header、URL、request body、全低レベル操作、入力検証
 - `tests/git-content/errors.test.ts`: JSON、非JSON、空body、network失敗、request ID、rate limit、secret除去
 - `tests/git-content/public-api.test.ts`: runtime export、公開型、内部request helperの非公開
+- `tests/git-content/commit-changes.test.ts`: write/delete/copy、head/ref競合、入力検証、途中失敗、non-force ref更新、成功結果
 
 mock fetchだけを使用し、GitHubへの実通信は行わない。完了確認は`npm run check`、`npm run test`、`npm run build`で行う。

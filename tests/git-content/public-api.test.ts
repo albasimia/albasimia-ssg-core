@@ -1,6 +1,9 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import * as gitContent from "../../src/features/git-content";
 import type {
+  CommitGitFileChangesInput,
+  CommitGitFileChangesResult,
+  GitFileChange,
   GitHubApiErrorCode,
   GitHubClient,
   GitHubClientConfig,
@@ -11,7 +14,9 @@ import type {
 describe("git-content public API", () => {
   it("exports the client factory and stable error only at runtime", () => {
     expect(Object.keys(gitContent).sort()).toEqual([
+      "GitFileCommitError",
       "GitHubApiError",
+      "commitGitFileChanges",
       "createGitHubClient",
     ]);
     expect(gitContent).not.toHaveProperty("createGitHubRequester");
@@ -25,5 +30,8 @@ describe("git-content public API", () => {
     expectTypeOf<GitHubApiErrorCode>().toEqualTypeOf<
       "CONFIG_INVALID" | "INPUT_INVALID" | "REQUEST_FAILED" | "HTTP_ERROR" | "RESPONSE_INVALID"
     >();
+    expectTypeOf<CommitGitFileChangesInput>().toHaveProperty("expectedHeadSha");
+    expectTypeOf<GitFileChange>().toHaveProperty("path");
+    expectTypeOf<CommitGitFileChangesResult>().toHaveProperty("status");
   });
 });
