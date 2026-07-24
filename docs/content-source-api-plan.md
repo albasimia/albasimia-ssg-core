@@ -1,6 +1,6 @@
 # Content Source Codec 公開API計画
 
-- 状態: 設計案・未実装
+- 状態: 実装済み（package公開subpathは未確定）
 - 対象: `docs/extraction-plan.md`のA-05、A-06のみ
 - 作成日: 2026-07-24
 
@@ -8,7 +8,18 @@
 
 YAML sourceとYAML frontmatter付きMarkdownを、Node.js、Astro、ブラウザのいずれにも依存しない純粋関数として扱うための最小公開APIを定義する。
 
-最初の公開APIとして小さく検証することを優先し、Content Bundle、schema検証、管理画面、GitHub保存との統合は扱わない。この文書ではAPI案、型定義、テスト計画だけを定め、実装、依存追加、既存コードの移動は行わない。
+最初の公開APIとして小さく検証することを優先し、Content Bundle、schema検証、管理画面、GitHub保存との統合は扱わない。
+
+## 実装状況
+
+2026-07-24に次を実装した。
+
+- `src/features/content-source/`に4つの公開関数、共通エラーclass、公開型を追加
+- `tests/content-source/`にYAML、frontmatter、公開APIのテストを追加
+- `yaml` packageをruntime dependencyへ追加
+- `docs/adr/ADR-0006-yaml-codec.md`で依存追加と標準契約を記録
+
+`@asc/content-source`というpackage公開subpathは配布方式とともに別途決定する。現時点の公開境界は`src/features/content-source/index.ts`とする。
 
 ## 対象範囲
 
@@ -375,4 +386,4 @@ ASC側では汎用Codecの契約だけを検証する。Event Bundle全体と既
 
 `@asc/content-source`はこの文書上の仮称である。ASCの配布方式と`package.json`の`exports`を別途決め、確定したsubpathへ置き換える。
 
-これらは実装前に決定する事項であり、この計画の作成時点ではpackage設定、依存、source codeを変更しない。
+`yaml` packageの採用事項は`docs/adr/ADR-0006-yaml-codec.md`で決定済みである。package公開subpathは引き続き未決定とする。
