@@ -1,37 +1,58 @@
 # albasimia-ssg-core
 
-**ASC** is a GitOps-oriented static site generation core built with Astro.
+**albasimia-ssg-core（ASC）は、GitOpsを前提としたAstroベースの静的サイト生成基盤です。**
 
-It is intended as a reusable foundation for portfolio sites, event sites,
-service landing pages, and other sites that can be delivered through static
-hosting services.
+ポートフォリオサイト、イベントサイト、サービスLPなど、複数の静的サイトで再利用できる共通基盤を提供します。
 
-## Goals
+プロジェクト固有のコンテンツ、ブランド、業務ロジックを共通基盤から分離し、静的サイト制作における保守性、再利用性、移植性を高めることを目的としています。
 
-- Generate static HTML with Astro
-- Keep site content and configuration in Git
-- Connect easily to static hosting services
-- Separate reusable infrastructure from project-specific content
-- Provide a small, readable foundation for derived projects
+> 一度設計し、何度でも育てる。
 
-## Non-goals
+## 目的
 
-ASC does not provide:
+ASCは、次の方針に基づいて設計します。
+
+- Astroによる静的HTML生成
+- Gitを正本とするコンテンツ管理
+- GitOpsを前提とした公開・更新フロー
+- 静的ホスティングサービスへの接続容易性
+- プロジェクト固有実装と共通基盤の分離
+- 小さく、読みやすく、拡張可能な構造
+
+## 対象
+
+ASCは、主に次のようなサイトを対象とします。
+
+- ポートフォリオサイト
+- イベント告知・開催記録サイト
+- サービスLP
+- 小規模なコーポレートサイト
+- Git管理と静的配信で成立するコンテンツサイト
+
+## 対象外
+
+ASCは、次の機能を提供しません。
 
 - SSR
-- Authentication as an application feature
-- Databases
-- Runtime API servers
-- Stateful backend processing
-- General-purpose CMS functionality
+- データベース
+- アプリケーション機能としての認証
+- 常時稼働するバックエンドAPI
+- サーバー上の状態管理
+- プロジェクト固有の業務ロジック
+- 汎用CMSとしての完成形
 
-Projects that require those capabilities should use a different foundation.
+これらが必要な場合は、ASCを無理に拡張せず、別の基盤または別プロジェクトとして設計します。
 
-## Repository structure
+## 構成
 
 ```text
 .
 ├── docs/
+│   ├── adr/
+│   ├── architecture.md
+│   ├── conventions.md
+│   ├── philosophy.md
+│   └── roadmap.md
 ├── public/
 ├── src/
 │   ├── components/
@@ -47,14 +68,14 @@ Projects that require those capabilities should use a different foundation.
 └── tsconfig.json
 ```
 
-## Getting started
+## セットアップ
 
 ```sh
 npm install
 npm run dev
 ```
 
-Before publishing:
+公開前には、次のコマンドを実行します。
 
 ```sh
 npm run check
@@ -62,16 +83,25 @@ npm run test
 npm run build
 ```
 
-## Derived projects
+## 派生プロジェクト
 
-ASC is intended to become the common foundation for projects such as:
+ASCは、次のプロジェクトに共通基盤を提供する予定です。
 
 - `catharsiswatari-events`
 - `amano-pj`
 
-Project-specific schemas, copy, visual identity, and domain features should
-remain in each derived project.
+各派生プロジェクトは、固有のコンテンツモデル、コピー、ビジュアル、ドメイン機能を自身のリポジトリ内に保持します。
 
-## License
+ASCへ追加する機能は、少なくとも複数の派生プロジェクトで再利用できる見込みがあるものに限定します。
+
+## 設計文書
+
+- [思想](docs/philosophy.md)
+- [アーキテクチャ](docs/architecture.md)
+- [設計規約](docs/conventions.md)
+- [ロードマップ](docs/roadmap.md)
+- [ADR](docs/adr/)
+
+## ライセンス
 
 MIT
