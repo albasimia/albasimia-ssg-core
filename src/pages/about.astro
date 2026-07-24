@@ -1,5 +1,5 @@
 ---
-import { getEntry } from "astro:content";
+import { getEntry, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
@@ -10,7 +10,7 @@ if (!page) {
   throw new Error("About page content was not found.");
 }
 
-const { Content } = await page.render();
+const { Content } = await render(page);
 ---
 
 <BaseLayout title={page.data.title} description={page.data.description}>
