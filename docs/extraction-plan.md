@@ -45,8 +45,8 @@
 
 | ID | 候補となる責務 | 現在の主な実装 | ASCでの配置候補 | 抽出時に必要な境界 |
 | --- | --- | --- | --- | --- |
-| A-01 | サイトメタデータとhead生成 | `src/layouts/BaseLayout.astro` | Site Foundationの`config`、`layouts`、`features/seo` | サイト名、locale、既定説明、OGP、favicon、検証用meta、title書式、theme colorを`SiteConfig`またはPropsから注入する。`ｶﾀﾙｼｽﾜﾀﾘ`、画像パス、Google検証値を持ち込まない |
-| A-02 | canonical、robots、OGP、Twitter Card、JSON-LDの出力 | `src/layouts/BaseLayout.astro`、`src/layouts/EventLayout.astro`のhead入力部分 | Site Foundationの`features/seo` | ASCはメタ情報を受け取って安全に出力するところまでを担う。EventのJSON-LD生成とdraft判定は派生側に残す。既存の`src/lib/seo.ts`を拡張し、重複実装を作らない |
+| A-01 | サイトメタデータとhead生成 | `src/layouts/BaseLayout.astro` | Site Foundationの`config`、`layouts`、`features/site-meta` | サイト名、locale、既定説明、OGP、favicon、検証用meta、title書式、theme colorを`SiteConfig`またはPropsから注入する。`ｶﾀﾙｼｽﾜﾀﾘ`、画像パス、Google検証値を持ち込まない |
+| A-02 | canonical、robots、OGP、Twitter Card、JSON-LDの出力 | `src/layouts/BaseLayout.astro`、`src/layouts/EventLayout.astro`のhead入力部分 | Site Foundationの`features/site-meta` | ASCはメタ情報を受け取って安全に出力するところまでを担う。EventのJSON-LD生成とdraft判定は派生側に残す。旧`src/lib/seo.ts`を統合し、重複実装を作らない |
 | A-03 | sitemap XML生成 | `src/pages/sitemap.xml.ts` | Site Foundationの`features/seo`または`sitemap` | XML escapeとURL集合からのXML生成を純粋関数にする。対象パス、Collection、draft除外規則は派生側から渡す。Astro公式integration採用との比較を実装前に行う |
 | A-04a | Light/Dark基礎テーマ | `src/styles/_theme.scss`、`src/layouts/BaseLayout.astro`の初期テーマ解決部分 | UI Foundationの`styles`とtheme resolver | デザイントークン、CSS Custom Properties、`prefers-color-scheme`対応、初期テーマ解決だけを基礎機構として提供する。色、auto時の既定テーマ、サイト固有フォントは派生側から設定し、切替UIと永続化は含めない |
 | A-05 | YAMLの安全なparse・決定的なserialize | `src/domain/events/source-codec.ts`の`parseYamlSource`、`stringifyYamlSource` | Content Foundationの`features/content-source` | ファイル表示名を引数化し、単一Document、重複key禁止、alias制限、改行・indent規約を契約にする。Eventスキーマ検証は受け取らない |
@@ -56,7 +56,7 @@
 | A-09 | GitHub Actions実行状態の取得 | `functions/api/admin/deployments/index.ts`、`functions/api/admin/deployments/[commitSha].ts` | GitOps FoundationまたはDeployment Foundationの`features/deploy-status` | workflow名、branch、取得件数を設定化し、GitHub APIの応答から共通の状態型へ変換する。`deploy.yml`固定と管理APIルートを含めない |
 | A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/`、`examples/`または`docs/deployment/` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
 
-A-01とA-02の公開API案、型定義、責務分担、テスト計画は`docs/site-foundation-api-plan.md`に記載する。
+A-01とA-02の公開API、型定義、責務分担、テスト計画、実装状況は`docs/site-foundation-api-plan.md`に記載する。Site Meta本体とBaseLayout接続、単体・統合テストは2026-07-24に実装済みである。
 
 A-05とA-06の公開API、型定義、テスト計画、実装状況は`docs/content-source-api-plan.md`に記載する。Codec本体と単体テストは2026-07-24に実装済みである。
 

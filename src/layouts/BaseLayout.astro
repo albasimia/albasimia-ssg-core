@@ -1,28 +1,84 @@
 ---
 import "../styles/global.scss";
 import { siteConfig } from "@/config/site";
+import { resolvePageMeta } from "@/features/site-meta/resolve";
+import type { PageMeta, SiteConfig } from "@/features/site-meta";
 
 type Props = {
+  site?: SiteConfig;
+  meta?: PageMeta;
+  /** Legacy shorthand for meta.title. */
   title?: string;
+  /** Legacy shorthand for meta.description. */
   description?: string;
 };
 
 const {
-  title = siteConfig.name,
-  description = siteConfig.description,
+  site = siteConfig,
+  meta,
+  title,
+  description,
 } = Astro.props;
 
-const pageTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const resolved = resolvePageMeta(
+  site,
+  meta ?? { title, description },
+  { pathname: Astro.url.pathname },
+);
 ---
 
 <!doctype html>
-<html lang={siteConfig.locale}>
+<html lang={site.locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="description" content={description} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>{pageTitle}</title>
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={resolved.description} />
+    <meta name="robots" content={resolved.robots} />
+    <link rel="canonical" href={resolved.canonicalUrl.href} />
+    {resolved.favicons.map((favicon) => (
+      <link
+        rel={favicon.rel}
+        href={favicon.href.href}
+        type={favicon.type}
+        sizes={favicon.sizes}
+        color={favicon.color}
+      />
+    ))}
+    {resolved.themeColors.map((themeColor) => (
+      <meta name="theme-color" content={themeColor.color} media={themeColor.media} />
+    ))}
+    {resolved.verification.map((verification) => (
+      <meta name={verification.name} content={verification.content} />
+    ))}
+    {resolved.openGraph !== false && (
+      <>
+        <meta property="og:type" content={resolved.openGraph.type} />
+        <meta property="og:url" content={resolved.openGraph.url.href} />
+        <meta property="og:title" content={resolved.openGraph.title} />
+        <meta property="og:description" content={resolved.openGraph.description} />
+        <meta property="og:site_name" content={resolved.openGraph.siteName} />
+        {resolved.openGraph.locale && <meta property="og:locale" content={resolved.openGraph.locale} />}
+        {resolved.openGraph.image && <meta property="og:image" content={resolved.openGraph.image.href} />}
+        {resolved.openGraph.imageAlt && <meta property="og:image:alt" content={resolved.openGraph.imageAlt} />}
+      </>
+    )}
+    {resolved.twitter !== false && (
+      <>
+        <meta name="twitter:card" content={resolved.twitter.card} />
+        <meta name="twitter:title" content={resolved.twitter.title} />
+        <meta name="twitter:description" content={resolved.twitter.description} />
+        {resolved.twitter.site && <meta name="twitter:site" content={resolved.twitter.site} />}
+        {resolved.twitter.creator && <meta name="twitter:creator" content={resolved.twitter.creator} />}
+        {resolved.twitter.image && <meta name="twitter:image" content={resolved.twitter.image.href} />}
+        {resolved.twitter.imageAlt && <meta name="twitter:image:alt" content={resolved.twitter.imageAlt} />}
+      </>
+    )}
+    <title>{resolved.title}</title>
+    {resolved.serializedJsonLd.map((jsonLd) => (
+      <script is:inline type="application/ld+json" set:html={jsonLd} />
+    ))}
+    <slot name="head" />
   </head>
   <body>
     <slot />

@@ -1,6 +1,6 @@
 # Site Foundation 公開API計画
 
-- 状態: 設計案・未実装
+- 状態: 実装済み（package公開subpathは未確定）
 - 対象: `docs/extraction-plan.md`のA-01、A-02のみ
 - 作成日: 2026-07-24
 
@@ -8,7 +8,19 @@
 
 サイト共通設定とページ単位メタ情報から、HTML headへ出力する値を一貫して解決するSite Foundationの公開APIを定義する。
 
-タイトル、canonical URL、robots、OGP、Twitter Cardなどの解決はDomainとAstroに依存しない純粋関数とし、HTMLへの出力だけをAstroの`BaseLayout`へ置く。この文書では公開API、型、責務、エラー方針、テスト計画だけを定め、実装は行わない。
+タイトル、canonical URL、robots、OGP、Twitter Cardなどの解決はDomainとAstroに依存しない純粋関数とし、HTMLへの出力だけをAstroの`BaseLayout`へ置く。本設計は`src/features/site-meta`と`src/layouts/BaseLayout.astro`へ実装済みである。
+
+## 実装状況
+
+2026-07-24に次を実装した。
+
+- `src/features/site-meta/`に公開関数、入力型、共通エラーclass、非公開resolverを追加
+- `src/layouts/BaseLayout.astro`を非公開resolverへ接続し、既存の本文構造とstyle読込を維持
+- `src/config/site.ts`を`defineSiteConfig`利用へ移行
+- 旧`src/lib/seo.ts`をSite Metaへ統合し、canonical実装の重複を解消
+- `tests/site-meta/`に純粋関数、公開境界、BaseLayout buildのテストを追加
+
+`@asc/site-meta`と`@asc/layouts/BaseLayout.astro`というpackage公開subpathは配布方式とともに別途決定する。現時点の公開境界は`src/features/site-meta/index.ts`であり、`ResolvedPageMeta`と`resolvePageMeta`はそこからexportしない。
 
 ## 対象範囲
 
@@ -700,12 +712,12 @@ const jsonLd = {
 10. `npm run check`、`npm run test`、`npm run build`が通る
 11. 2つ目の派生プロジェクトで同じ公開APIを使用できる
 
-## 実装前の決定事項
+## 実装時の決定
 
-- `@asc/site-meta`と`@asc/layouts/BaseLayout.astro`の実際のpackage export path
-- `BaseLayout`のnamed `head` slotを公開拡張点として保証する範囲
-- JSON-LDのruntime validationを独自の再帰検査で実装するか、既存依存を利用するか
-- 既存`SiteConfig`、`createCanonicalUrl`、`BaseLayout`を一括移行するか、deprecated期間を設けるか
-- OGPとTwitter Cardを既定で有効にする方針をADRへ記録する必要があるか
+- package export pathは未確定とし、featureの`index.ts`を現時点の公開境界とする
+- named `head` slotは共通metaの後に描画する公開拡張点とする
+- JSON-LDは新規依存を追加せず、独自の再帰検査でruntime validationする
+- 旧`SiteConfig`と`createCanonicalUrl`は一括移行し、BaseLayoutの`title`、`description` Propsだけは移行互換のため維持する
+- OGPとTwitter Cardは設計どおり既定で有効とする
 
-この文書の作成時点では、source code、package設定、依存、既存公開APIを変更しない。
+OGPとTwitter Cardの既定方針を独立ADRへ記録するかは、package公開subpathの決定時に再評価する。
