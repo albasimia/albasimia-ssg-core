@@ -1,6 +1,6 @@
 # catharsiswatari-eventsからの抽出計画
 
-- 状態: 調査済み・未着手
+- 状態: 調査済み・一部実装済み
 - 対象: `../catharsiswatari-events`
 - 調査日: 2026-07-24
 
@@ -47,7 +47,7 @@
 | --- | --- | --- | --- | --- |
 | A-01 | サイトメタデータとhead生成 | `src/layouts/BaseLayout.astro` | Site Foundationの`config`、`layouts`、`features/site-meta` | サイト名、locale、既定説明、OGP、favicon、検証用meta、title書式、theme colorを`SiteConfig`またはPropsから注入する。`ｶﾀﾙｼｽﾜﾀﾘ`、画像パス、Google検証値を持ち込まない |
 | A-02 | canonical、robots、OGP、Twitter Card、JSON-LDの出力 | `src/layouts/BaseLayout.astro`、`src/layouts/EventLayout.astro`のhead入力部分 | Site Foundationの`features/site-meta` | ASCはメタ情報を受け取って安全に出力するところまでを担う。EventのJSON-LD生成とdraft判定は派生側に残す。旧`src/lib/seo.ts`を統合し、重複実装を作らない |
-| A-03 | sitemap XML生成 | `src/pages/sitemap.xml.ts` | Site Foundationの`features/seo`または`sitemap` | XML escapeとURL集合からのXML生成を純粋関数にする。対象パス、Collection、draft除外規則は派生側から渡す。Astro公式integration採用との比較を実装前に行う |
+| A-03 | sitemap XML生成 | `src/pages/sitemap.xml.ts` | Site Foundationの`features/sitemap` | XML escapeとURL集合からのXML生成を純粋関数にする。対象パス、Collection、公開可否の規則は派生側から渡す。重複URLは正規化後の先勝ちとし、Astro endpointは薄いadapterにする |
 | A-04a | Light/Dark基礎テーマ | `src/styles/_theme.scss`、`src/layouts/BaseLayout.astro`の初期テーマ解決部分 | UI Foundationの`styles`とtheme resolver | デザイントークン、CSS Custom Properties、`prefers-color-scheme`対応、初期テーマ解決だけを基礎機構として提供する。色、auto時の既定テーマ、サイト固有フォントは派生側から設定し、切替UIと永続化は含めない |
 | A-05 | YAMLの安全なparse・決定的なserialize | `src/domain/events/source-codec.ts`の`parseYamlSource`、`stringifyYamlSource` | Content Foundationの`features/content-source` | ファイル表示名を引数化し、単一Document、重複key禁止、alias制限、改行・indent規約を契約にする。Eventスキーマ検証は受け取らない |
 | A-06 | Markdown frontmatterの分離・再構築 | `src/domain/events/source-codec.ts`の`parseEventMarkdown`、`src/admin/editor-codec.ts`の`splitEventSource`相当 | Content Foundationの`features/content-source` | `event.md`という名前とイベント向けエラー文を外し、改行コード保持とfrontmatter更新を共通契約にする。schemaは派生側から渡す |
@@ -57,6 +57,8 @@
 | A-10 | GitHub Actionsによる静的ビルド・Cloudflare Pagesデプロイの雛形 | `.github/workflows/deploy.yml`、`wrangler.jsonc` | Deployment Foundationの`templates/`、`examples/`または`docs/deployment/` | ASCの公開APIではなく、デプロイ戦略、推奨設定、CI雛形として提供する。Node version、検証コマンド、出力先、Cloudflare project名を派生側設定にする。Cloudflareは最初の標準対象とするが、Site/Content/UI Foundationからは参照しない |
 
 A-01とA-02の公開API、型定義、責務分担、テスト計画、実装状況は`docs/site-foundation-api-plan.md`に記載する。Site Meta本体とBaseLayout接続、単体・統合テストは2026-07-24に実装済みである。
+
+A-03の公開API、重複URL方針、Astro公式integrationとの比較、実装状況は`docs/sitemap-api.md`に記載する。Sitemap純粋関数、Astro endpoint adapter、単体・公開API・buildテストは2026-07-24に実装済みである。
 
 A-05とA-06の公開API、型定義、テスト計画、実装状況は`docs/content-source-api-plan.md`に記載する。Codec本体と単体テストは2026-07-24に実装済みである。
 
@@ -126,7 +128,7 @@ B-05からB-09を先にheadlessまたは小さな部品として分離し、派�
 1. **Contentの純粋関数で最小の公開APIを検証する**  
    最初の実装対象をA-05のYAML CodecとA-06のMarkdown Frontmatter Codecとする。イベント依存とAstro実行環境への依存を除去し、単体テスト付きの小さな公開APIとして分離する。その上にB-01のschema注入型検証を設計する。
 2. **Site Foundationを既存実装へ統合する**  
-   A-05、A-06で公開APIの設計方法を確認した後、A-01からA-04aをASCの既存`src/config/site.ts`、`src/layouts/BaseLayout.astro`、`src/lib/seo.ts`、`src/styles/global.scss`へ統合する。対象サイトのファイルをそのままコピーしない。
+   A-05、A-06で公開APIの設計方法を確認した後、A-01からA-04aをASCの`src/config/site.ts`、`src/layouts/BaseLayout.astro`、`src/features/site-meta`、`src/features/sitemap`、`src/styles/global.scss`へ統合する。対象サイトのファイルをそのままコピーしない。
 3. **アセット処理をpolicyと実装へ分ける**  
    B-02、B-03、B-04、B-05について、形式解析・変換という共通実装と、用途別上限・パスという派生側policyを分離する。
 4. **GitHub操作をHTTP routeから分離する**  

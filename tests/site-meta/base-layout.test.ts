@@ -9,6 +9,7 @@ const projectRoot = fileURLToPath(new URL("../..", import.meta.url));
 const outputDirectory = mkdtempSync(join(tmpdir(), "asc-site-meta-"));
 let indexHtml = "";
 let aboutHtml = "";
+let sitemapXml = "";
 
 beforeAll(() => {
   execFileSync("npm", ["run", "build", "--", "--outDir", outputDirectory], {
@@ -18,6 +19,7 @@ beforeAll(() => {
   });
   indexHtml = readFileSync(join(outputDirectory, "index.html"), "utf8");
   aboutHtml = readFileSync(join(outputDirectory, "about", "index.html"), "utf8");
+  sitemapXml = readFileSync(join(outputDirectory, "sitemap.xml"), "utf8");
 });
 
 afterAll(() => {
@@ -36,5 +38,13 @@ describe("BaseLayout", () => {
   it("keeps legacy page props working during migration", () => {
     expect(aboutHtml).toContain('<title>ASCについて | ASC Example Site</title>');
     expect(aboutHtml).toContain('<link rel="canonical" href="https://example.com/about/">');
+  });
+});
+
+describe("sitemap endpoint", () => {
+  it("emits the adapter URL collection during a static build", () => {
+    expect(sitemapXml).toContain("<loc>https://example.com/</loc>");
+    expect(sitemapXml).toContain("<loc>https://example.com/about/</loc>");
+    expect(sitemapXml.match(/<url>/g)).toHaveLength(2);
   });
 });
