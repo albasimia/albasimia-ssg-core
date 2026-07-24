@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -25,8 +28,8 @@ jobs:
       - name: Type check
         run: npm run check
 
-      - name: Test
+      - name: Test source and packed distribution
         run: npm run test
 
-      - name: Build
+      - name: Build package and sample site
         run: npm run build

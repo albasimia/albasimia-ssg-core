@@ -29,3 +29,14 @@ ADR-0002-gitops-first.md
 - 理由
 - 影響
 - 代替案
+
+## Accepted ADR
+
+- ADR-0001: project scope
+- ADR-0002: GitOps first
+- ADR-0003: static hosting
+- ADR-0004: derived projects
+- ADR-0005: content driven
+- ADR-0006: YAML codec
+- ADR-0007: npm package distribution
+- ADR-0008: Cloudflare Pages deployment template

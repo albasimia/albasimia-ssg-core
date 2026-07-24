@@ -6,10 +6,12 @@
 - Extraction A-01〜A-10: repository内の機能実装・単体テスト・個別文書を実装済み
 - Package Foundation: 5つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを2026-07-25に実装済み
 - Package Foundation: BaseLayout / compile済みCSS公開と、installed packageによる最小Astro consumer check / buildを2026-07-25に実装済み
+- Release Foundation: metadata、ADR、release checklist、通常CIのpackage/pack consumer検証を2026-07-25に確定
+- 判定: repository内にv0.1 blockerはなく、`0.1.0`はrelease ready
 
 ## v0.1 Foundation
 
-ASCの責務と設計原則を確定する。
+ASCの責務と設計原則に加え、A-01〜A-10とnpm配布基盤を含む最初のreleaseを確定する。この節は2026-07-25時点で完了済みである。
 
 - 公開リポジトリ
 - MIT License
@@ -19,6 +21,12 @@ ASCの責務と設計原則を確定する。
 - Astro静的ビルド
 - CI
 - 最小サンプルサイト
+- 5つのTypeScript feature subpath
+- BaseLayoutとcompile済みCSS
+- Cloudflare Pages deployment template
+- packed packageによる最小Astro consumer検証
+
+以下のv0.2以降は将来候補であり、B候補とともにv0.1.0の対象外とする。既にv0.1へ先行実装された項目は、将来versionでAPI互換性と実利用結果を再評価する。
 
 ## v0.2 Site Foundation
 
@@ -70,7 +78,7 @@ GitHubを正本とする編集・保存基盤を抽出する。
 - 複数ファイル同時更新
 - 競合検知
 - 差分生成
-- Actions状態取得
+- GitHub Repository content操作の実利用再評価
 - 保存前検証
 
 ## v0.6 Admin Foundation

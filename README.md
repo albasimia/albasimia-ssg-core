@@ -70,11 +70,13 @@ ASCは、次の機能を提供しません。
 
 ## セットアップ
 
-### TypeScript featureを利用する
+### npm packageを利用する
 
 ```sh
-npm install albasimia-ssg-core
+npm install astro@^7.1.1 albasimia-ssg-core
 ```
+
+Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro`のpeer dependencyです。SassはASCのbuild時にだけ使用し、consumerには不要です。
 
 ASCはroot exportを設けず、機能境界ごとのsubpathを公開します。
 
@@ -124,7 +126,10 @@ npm run dev
 npm run check
 npm run test
 npm run build
+npm pack --dry-run
 ```
+
+repository内のpages、components、content、public assetsはASC自体を検証するsample siteです。npm packageには、公開subpathの生成物、BaseLayout、compile済みCSS、deployment templateだけを収録し、sample siteは含めません。
 
 ## 派生プロジェクト
 
@@ -145,6 +150,8 @@ ASCへ追加する機能は、少なくとも複数の派生プロジェクト�
 - [ロードマップ](docs/roadmap.md)
 - [TypeScript featureのpackage公開](docs/package-exports.md)
 - [Cloudflare Pagesデプロイ雛形](docs/deployment/cloudflare-pages.md)
+- [Release checklist](docs/release-checklist.md)
+- [Changelog](CHANGELOG.md)
 - [ADR](docs/adr/)
 
 ## ライセンス

@@ -1,6 +1,6 @@
 # catharsiswatari-eventsからの抽出計画
 
-- 状態: 調査済み・一部実装済み
+- 状態: A-01〜A-10実装・package公開済み、B候補はv0.1対象外として保留
 - 対象: `../catharsiswatari-events`
 - 調査日: 2026-07-24
 
@@ -8,7 +8,7 @@
 
 `catharsiswatari-events`にある実装を、ASCへ移す候補、汎用化してから移す候補、派生プロジェクトへ残すものに分類する。
 
-この文書は候補の一覧と境界を定めるためのものであり、コード、設定、アセットの移動は行わない。記載した名前は責務を示す仮称であり、ASCの公開APIを確定するものではない。
+この文書は候補の一覧と境界を定めるためのものである。A候補はASC内で実装・公開済みだが、`catharsiswatari-events`からのコード、設定、アセットの本移行は行っていない。B候補は将来の実利用確認まで保留する。
 
 ## 判断の根拠
 
@@ -133,7 +133,9 @@ B-04bおよびB-10からB-13をASCのUI Foundationへ追加するには、次の
 
 B-05からB-09を先にheadlessまたは小さな部品として分離し、派生側からフォーム、API、検証、画面遷移を登録できる設計が成立した後にShell化を再評価する。
 
-## 推奨する抽出順序
+## 実施した抽出順序と将来順序
+
+次の1、2、4、5に対応するA候補は実装済みである。3、6、7のB候補はv0.1.0に含めず、派生projectで再利用性を確認してから着手する。
 
 1. **Contentの純粋関数で最小の公開APIを検証する**  
    最初の実装対象をA-05のYAML CodecとA-06のMarkdown Frontmatter Codecとする。イベント依存とAstro実行環境への依存を除去し、単体テスト付きの小さな公開APIとして分離する。その上にB-01のschema注入型検証を設計する。
@@ -174,14 +176,14 @@ ASCから次の対象をimport、参照、既定値化してはならない。
 - `deploy.yml`、Cloudflare project名、Cloudflare Access設定
 - 派生プロジェクトのCommit messageや日本語エラー文
 
-## 実装着手前に決めること
+## 確定済みの配布判断と将来の検討
 
-- ASCをnpm packageとして参照するか、Astro integrationまたは別の配布方法を採るか
-- Astro component、browser code、Cloudflare/Node codeのexport条件と実行環境
-- `yaml`、`sharp`、`@jsquash/webp`、`diff`、React関連をASCの依存に追加する範囲
+- ASCはESM npm packageとして明示的subpathから参照する
+- TypeScript feature、BaseLayout、compile済みCSSを公開し、raw SCSSとsample siteは配布しない
+- `yaml`はruntime dependency、Astroはpeer dependency、Sassはbuild用dev dependencyとする
+- Cloudflare Pages設定は公開APIではなくコピー可能なdeployment templateとして分離する
+- `sharp`、`@jsquash/webp`、`diff`、React関連をB候補で追加する範囲
 - GitHub APIエラー、競合、validation issueの公開型
-- Cloudflare Pages向けadapterをASC本体に含めるか、provider packageまたは例として分離するか
-- 各候補を`index.ts`から公開する範囲と、内部実装として保持する範囲
-- A/B候補ごとに2つ目の派生プロジェクトで成立する最小利用例
+- B候補ごとに2つ目の派生プロジェクトで成立する最小利用例
 
 これらのうち、外部依存の追加、ASCの責務変更、特定hosting serviceへの依存、公開APIの破壊的変更は`docs/conventions.md`に従いADRで決定する。

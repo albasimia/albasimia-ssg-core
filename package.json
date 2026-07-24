@@ -3,8 +3,28 @@
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "description": "GitOps-oriented static site generation core built with Astro.",
+  "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
+  "author": "albasimia",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albasimia/albasimia-ssg-core.git"
+  },
+  "homepage": "https://github.com/albasimia/albasimia-ssg-core#readme",
+  "bugs": {
+    "url": "https://github.com/albasimia/albasimia-ssg-core/issues"
+  },
+  "keywords": [
+    "astro",
+    "static-site-generator",
+    "gitops",
+    "sitemap",
+    "github-api",
+    "cloudflare-pages"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     "./site-meta": {
       "types": "./package-dist/features/site-meta/index.d.ts",
@@ -41,6 +61,7 @@
     "package-dist/styles/",
     "templates/deployment/cloudflare-pages/",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "sideEffects": [
@@ -65,6 +86,9 @@
   },
   "dependencies": {
     "yaml": "^2.9.0"
+  },
+  "peerDependencies": {
+    "astro": "^7.1.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.5",

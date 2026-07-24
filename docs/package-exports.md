@@ -81,6 +81,7 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 - compile済み`theme.css`と`global.css`
 - `templates/deployment/cloudflare-pages/`
 - `README.md`
+- `CHANGELOG.md`
 - `LICENSE`
 - npmが必ず含める`package.json`
 
@@ -100,7 +101,9 @@ TypeScript feature自体はimport時にglobal stateやI/Oを変更しない。Ba
 
 ## dependency境界
 
-公開5 featureのruntime dependencyは`yaml`だけである。AstroとSassはrepositoryのsample siteとbuild/testに必要だが、今回のTypeScript subpathのruntimeには不要なためdev dependencyとする。直接利用されていなかった`zod` dependencyは削除した。
+公開5 featureのruntime dependencyは`yaml`だけである。公開`BaseLayout.astro`をcompileするconsumerにはAstroが必要なため、Astro 7を`peerDependencies`に置き、ASC自身のbuild/test用として`devDependencies`にも保持する。Sassはcompile済みCSSを生成するbuild用`devDependency`に限定し、consumer dependencyにはしない。直接利用されていなかった`zod` dependencyは削除した。
+
+package root exportはないため、`main`、`module`、root用`types`は設定しない。公開packageであることを`publishConfig.access: public`に明示し、version、license、repository、homepage、bugs、author、keywords、Node engineは`package.json`を正本とする。
 
 ## 検証
 
@@ -114,6 +117,8 @@ TypeScript feature自体はimport時にglobal stateやI/Oを変更しない。Ba
 - source、test、sample、CI、raw SCSSが含まれないこと
 - installed packageを使う最小Astro fixtureのcheckとstatic build
 - 生成HTMLのtitle、canonical、descriptionと公開CSS contract
+
+通常CIの`npm run test`がこのpacked distribution testを含み、`npm run build`のlifecycleがpackage buildとsample site buildを実行する。CIからnpm publishや実deployは行わない。
 
 公開前には次を実行する。
 

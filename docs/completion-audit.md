@@ -1,203 +1,124 @@
-# A-01〜A-10 完成度監査
+# ASC v0.1.0 completion audit
 
-- 監査日: 2026-07-25
+- 最終監査日: 2026-07-25
 - 対象version: `0.1.0`
-- 対象範囲: README、設計文書、ADR、A-01〜A-10、source、layout、style、template、test、package設定、Astro設定、CI、公開予定API
-- 監査方針: この文書では現状を評価するだけとし、新featureの実装や既存実装の変更は行わない
-- 更新: 2026-07-25にP0-1〜P0-4を解消。TypeScript feature、BaseLayout、CSS、最小Astro consumerを反映
+- 対象: README、philosophy、architecture、conventions、roadmap、ADR、extraction plan、source、layout、style、template、test、package設定、Astro設定、CI、公開API
+- 判定: **v0.1 release ready**
 
 ## 総合判定
 
-A-01〜A-10は、ASC repository内の機能実装、単体・統合テスト、個別設計文書という範囲では概ね完了している。A-01〜A-04a、A-07〜A-10は要求された責務を確認でき、A-05とA-06もASC内の実装とテストは完了している。
+A-01〜A-10とP0-1〜P0-5は、repository内の実装、テスト、文書、npm配布境界として完了した。5つのTypeScript feature、BaseLayout、compile済みCSS、deployment templateは実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認する。
 
-P0-1〜P0-4の対応により、5つのTypeScript feature、BaseLayout、compile済みCSSを実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認している。
+repository内に`0.1.0` releaseを阻害するblockerはない。registryへのpublishは自動化せず、`docs/release-checklist.md`に従う手動判断とする。`catharsiswatari-events`でのA-05/A-06実利用確認は公開前checklistに残すが、本repositoryの実装blockerや移行作業には含めない。
 
-したがって総合判定は次のとおりとする。
+## A-01〜A-10
 
-- A-01〜A-10の機能完成度: **完了。ただしA-05/A-06の派生project consumer確認は未確認**
-- 設計と実装の一致: **概ね一致。一部の古い記述と責務表現を修正する必要あり**
-- TypeScript feature package: **P0-1、P0-2完了**
-- npm packageとしてのv0.1全体: **P0-1〜P0-4完了。残るrelease文書・metadataはP0-5で確認**
-- v0.1 release可否: **必須修正完了まで不可**
-
-## A-01〜A-10 完了確認
-
-| ID | 実装 | テスト | 文書 | 判定 | 監査所見 |
-| --- | --- | --- | --- | --- | --- |
-| A-01 | `features/site-meta`、`BaseLayout.astro`、`config/site.ts` | 純粋関数、公開runtime API、static build | `site-foundation-api-plan.md` | 完了 | `SiteConfig`、title、favicon、theme-color、verificationを確認。packageからのLayout公開方法は未確定 |
-| A-02 | canonical、robots、OGP、Twitter、JSON-LD resolverとhead出力 | 各純粋関数、resolver、build HTML | `site-foundation-api-plan.md` | 完了 | `ResolvedPageMeta`とresolverはfeature indexとpackage exportsから非公開 |
-| A-03 | `createSitemapXml`とAstro endpoint adapter | XML、escape、URL検証、重複、build | `sitemap-api.md` | 完了 | URL収集はsample adapter側に分離され、trailing slashも維持 |
-| A-04a | `_theme.scss`、`global.scss` | Sass compile、token、dark media、JS非依存 | `theme-contract.md` | 完了 | CSS契約は明記済み。配布するCSS artifactは未定義 |
-| A-05 | YAML parse / serialize | YAML 1.2、重複key、alias、canonical出力、error | `content-source-api-plan.md`、ADR-0006 | 条件付き完了 | ASC内は完了。文書が完了条件にする派生project consumer testはこのrepositoryから確認できない |
-| A-06 | Markdown frontmatter parse / serialize | LF / CRLF、本文保持、異常系、公開型 | `content-source-api-plan.md` | 条件付き完了 | ASC内は完了。A-05と同じく派生project consumer testは未確認 |
-| A-07 | GitHub Contents / Git Database client、共通request/error | mock fetch、全低レベル操作、非JSON、空body、rate limit、secret除去 | `git-content-api.md` | 完了 | fetch注入とruntime非依存境界に加え、packed packageのNode ESM importを確認 |
-| A-08 | `commitGitFileChanges` | 複数write、write/delete/copy、head/ref競合、不正入力、途中失敗 | `git-content-api.md` | 完了 | low-level clientを再利用し、branch更新は最後のnon-force ref更新だけ |
-| A-09 | 独立`deploy-status` feature | workflow指定、filter、正規化、未知値、該当なし、error | `deploy-status-api.md` | 完了 | GitHub共通internalを共有し、Actions APIを`git-content`へ混在させていない |
-| A-10 | GitHub Actions / Wrangler雛形 | YAML/JSON parse、command、placeholder、secret参照 | `deployment/cloudflare-pages.md` | 完了 | 公開TS APIではない。実deployをしない方針とpreview/productionを確認 |
+| ID | 実装・テスト・文書 | 判定 |
+| --- | --- | --- |
+| A-01 / A-02 | `site-meta`、公開BaseLayout、head metadata、純粋関数・build test、`site-foundation-api-plan.md` | 完了 |
+| A-03 | sitemap純粋関数、XML escape、URL検証、Astro adapter、単体・公開・build test、`sitemap-api.md` | 完了 |
+| A-04a | `--asc-` token、light/dark、OS連動、compile済みCSS、contract test、`theme-contract.md` | 完了 |
+| A-05 / A-06 | YAML / Markdown codec、error・改行・決定的serialize test、`content-source-api-plan.md` | 完了。派生project実利用はrelease checklist |
+| A-07 / A-08 | GitHub client、error正規化、atomic multi-file commit、競合・失敗test、`git-content-api.md` | 完了 |
+| A-09 | 独立`deploy-status`、status正規化、mock fetch test、`deploy-status-api.md` | 完了 |
+| A-10 | Cloudflare Pages workflow / Wrangler template、構文・placeholder test、deployment文書 | 完了 |
 
 ## 完了済み
 
-### 設計原則と責務
+### 公開境界と配布物
 
-- `philosophy.md`、ADR-0001〜0005、`architecture.md`は、Git正本、静的配信、Domain非依存、派生projectからASCへの一方向依存で整合している。
-- Event、slug、特定Collection、Cloudflare Env、管理API routeなどの固有語彙はA-01〜A-09の公開型へ混入していない。
-- Cloudflare Pages固有設定はA-10のtemplateと導入文書に分離され、Site、Content、UI、GitOps featureから参照されていない。
-- `ResolvedPageMeta`と`resolvePageMeta`は`src/features/site-meta/index.ts`からexportされていない。
-- GitHub共通request helperは`src/internal/github-api`にあり、`git-content`と`deploy-status`のruntime APIから公開されていない。
+- `site-meta`、`sitemap`、`content-source`、`git-content`、`deploy-status`は各`src/features/*/index.ts`だけをsource公開境界とする。
+- packageは同名の5 subpath、`layouts/BaseLayout.astro`、`styles/theme.css`、`styles/global.css`だけを明示的にexportする。root exportとwildcard exportはない。
+- `ResolvedPageMeta`、resolver、feature内部file、`src/internal`、compile済み共有internalはexports経由で到達できない。
+- ESM JavaScriptと`.d.ts`を`package-dist`へ生成し、Node ESMで解決できる`.js`付きrelative importを使用する。
+- `files` allowlistは生成物、deployment template、README、CHANGELOG、LICENSEだけを収録する。source、tests、sample site、CI、docs、raw SCSSは含めない。
+- `sideEffects`はCSSだけを保持する。root exportがないため`main`、`module`、root用`types`は意図的に設定しない。
 
-### feature公開境界
+### Layout、CSS、consumer
 
-source上の公開境界は次の5つの`index.ts`に整理されている。
+- 公開BaseLayoutは`site: SiteConfig`を必須、`meta?: PageMeta`を任意とし、sample config、legacy shorthand、`@/` aliasへ依存しない。
+- canonical、robots、OGP、Twitter、JSON-LD、favicon、theme-color、verificationとnamed head slotをSite Meta契約で出力する。
+- BaseLayoutはcompile済み`global.css`を自動importする。consumerはSassを必要としない。
+- packed package consumer testは`defineSiteConfig`、BaseLayout、CSS、`createSitemapXml`を実際に利用し、Astro check、static build、生成HTMLを確認する。
 
-- `src/features/site-meta/index.ts`
-- `src/features/sitemap/index.ts`
-- `src/features/content-source/index.ts`
-- `src/features/git-content/index.ts`
-- `src/features/deploy-status/index.ts`
+### metadata、dependency、CI
 
-各featureの`public-api.test.ts`はruntime exportと主要な公開型を確認している。特にSite Metaはresolverを、GitHub系featureはrequest helperをruntime exportしていないことをテストしている。
+- package名、version `0.1.0`、description、MIT license、author、repository、homepage、bugs、keywords、Node engine、public publish設定を定義した。
+- `yaml`はruntime dependencyである。公開Layoutを使うconsumer向けにAstro 7をpeer dependencyとし、ASCの検証用dev dependencyにも保持する。Sassはbuild専用dev dependencyである。
+- `.nvmrc`とenginesの最小versionを22.12.0へ揃えた。
+- 通常CIは最小権限で`npm ci`、check、test、buildを実行する。testはpackage buildと実tarball distribution testを含み、buildはpackage buildとsample static buildを含む。publishと実deployは行わない。
+- package方針はADR-0007、Cloudflare Pages template方針はADR-0008へ記録した。
 
-package levelでは同じ5境界を`exports`へ列挙し、root、feature内部、共有internalのdeep importを拒否する。source内部の直接importは単体テストとASC内部実装に限定する。
+### sample siteとpackage
 
-### testとbuild
-
-- 純粋関数、error、公開runtime API、Astro build、SCSS contract、deployment templateを含むtestがある。
-- A-08はref更新前の失敗で`updateRef`を呼ばないことをblob、tree、commitの各段階で確認している。
-- A-10はcredential実値を使わず、YAMLとWrangler JSONの構文を確認している。
-- package distribution testはtarballを一時consumerへinstallし、5 subpathのruntime / type解決、Node ESM、private import拒否、file allowlistを確認する。
-- `.github/workflows/ci.yml`は`npm ci`、`npm run check`、`npm run test`、`npm run build`をpushとpull requestで実行する。
-- `astro.config.mjs`は`output: "static"`を明示しており、ADR-0003と一致する。
-
-### package metadataで完了している項目
-
-- versionは`0.1.0`である。
-- `license: "MIT"`とrootの`LICENSE`が一致する。
-- `private: false`、ESMを示す`type: "module"`、Node engine `>=22.12.0`が設定されている。
-- 5 featureの`exports`、`files` allowlist、`sideEffects: false`が設定されている。
-- root exportを設けないため、`main`、`module`、root用`types`を意図的に省略している。
-- runtime依存である`yaml`は`dependencies`にあり、採用理由はADR-0006に記録されている。
+repositoryのpages、components、content、config、public assetsはASC自身のstatic buildを検証するsample siteであり、package配布物ではない。派生projectは公開package subpathだけに依存し、固有のCollection、ページ、visual、domain logicを自身に保持する。
 
 ## 必須修正
 
 ### P0-1: package entrypoint、exports、型定義、配布build（解消済み）
 
-`tsconfig.lib.json`と`build:package`を追加し、5 featureからNode ESM JavaScriptと`.d.ts`を生成する。package rootは公開せず、`albasimia-ssg-core/site-meta`、`sitemap`、`content-source`、`git-content`、`deploy-status`の明示的subpathだけを`exports`へ設定した。相対importは`.js`を明示し、installed packageのNode ESM実行で検証する。
+5 featureのESM JavaScriptとdeclaration build、明示的subpath exports、Node ESM検証を実装した。
 
-### P0-2: 配布物allowlistとprivate境界（解消済み）
+### P0-2: 配布allowlistとprivate境界（解消済み）
 
-`files` allowlistにより、compile済み5 feature、必要なcompile済みGitHub共有internal、BaseLayout、compile済みCSS、deployment template、README、LICENSEだけを配布する。`src`、tests、sample site、CI、docs、raw SCSSはtarballへ含めない。compile済み共有internalはruntimeに必要だが、`exports`に経路を持たずdeep import testで拒否を確認する。詳細は`docs/package-exports.md`に記載する。
+allowlistとpacked package testにより、必要な生成物だけを配布し、root / feature internal / shared internalのdeep importを拒否する。
 
 ### P0-3: BaseLayoutとCSSのpackage公開（解消済み）
 
-BaseLayoutを`albasimia-ssg-core/layouts/BaseLayout.astro`から公開した。`site`は必須、`meta`は任意で、sample config、`@/` alias、legacy shorthandへ依存しない。package内部はrelative importで解決する。CSSは`styles/theme.css`と`styles/global.css`へcompileし、raw SCSSを配布しない。BaseLayoutは`global.css`を自動importする。
+sample非依存BaseLayoutとcompile済みCSSを確定subpathから公開し、raw SCSSを公開しない。
 
 ### P0-4: 最小Astro consumer（解消済み）
 
-`tests/fixtures/minimal-consumer`をtarball install後に実行し、package subpathのSiteConfig、BaseLayout、Sitemap、公開CSSを利用してAstro checkとstatic buildを通す。生成HTMLのtitle、canonical、description、CSS token、sitemapを検証する。
+実tarballをinstallするfixtureでAstro check / build、HTML metadata、CSS、sitemapを検証する。
 
-A-05/A-06の文書が完了条件とする`catharsiswatari-events`側consumer testも、実施済みかをrelease checklistで確認する。
+### P0-5: release metadata、文書、ADR、CI（解消済み）
 
-### P0-5: release文書とADRに現在状態との不整合がある
-
-次の記述はv0.1前に修正または意思決定が必要である。
-
-- `architecture.md`とroadmapはActions状態取得をGitOps Foundationにも置く一方、実装と`deploy-status-api.md`はDeployment Foundationの独立featureとしている。共通GitHub transportだけを共有する現在の責務に合わせる必要がある。
-- roadmap上の「v0.1 Foundation」とpackage version `0.1.0`が同じ範囲を指すのか、A-01〜A-10までを含むreleaseなのかが明記されていない。
-- 外部依存追加はADR対象という規約に対し、A-04aでの`sass`追加と、A-10でCloudflare Pagesを最初の標準templateにする判断を扱うADRがない。既存ADRで十分と判断する場合も、その根拠を記録する必要がある。
+package metadataとdependency区分を完成し、architecture、conventions、roadmap、extraction plan、API文書を現在の実装へ同期した。ADR-0007/0008、CHANGELOG、release checklistを追加し、CIのpackage / distribution検証契約を明記した。
 
 ## 推奨修正
 
-### package metadata
+- `astro:content`由来のschema importに関するcheck hintは将来のAstro追従時に解消する。現時点ではerrorではなくrelease blockerではない。
+- GitHub公開型と共有internal型のdrift防止、実browser / Workers bundle検証、actual CI YAMLの自動構文testは互換性を維持した小規模改善として将来検討する。
+- npm version固定は運用環境が確定した時点で`packageManager`またはCorepack方針として追加を判断する。
 
-- TypeScript featureだけを公開する現段階は`sideEffects: false`とした。P0-3でCSS、SCSS、Astro componentを配布するときに再評価する。
-- `repository`、`homepage`、`bugs`、`keywords`、必要なら`author`または`funding`を追加する。
-- 使用するnpm versionを固定するため`packageManager`を追加する。
-- 公開scopeを採用する場合は`publishConfig.access`を明示する。
-- `.nvmrc`の`22`と`engines.node`の`>=22.12.0`を同じrelease方針へ揃える。
-- CI jobへ`permissions: contents: read`を明示する。
+## 保留・将来課題
 
-### dependency整理
+B-01〜B-13、ThemeSwitcher、Admin UI、画像処理、polling UI、QR code、管理画面Shellはすべてv0.1対象外である。少なくとも2つの派生projectで同じ責務・公開APIが成立したものだけを再評価する。
 
-- 未使用だった直接`zod` dependencyは削除した。
-- `npm run check`は成功するが、`src/content.config.ts`の`astro:content`由来`z`に非推奨hintが5件ある。release blockerではないものの、Astroの現行schema importへ移行してcleanなcheck結果にすることを推奨する。
-- 現在の公開subpathはAstroへ依存しないため、Astroはrepository build用dev dependencyへ移した。P0-3でLayout公開時にpeer dependencyを再検討する。
-- compile済みCSSを配布するなら`sass`はbuild用dev dependencyでよい。raw SCSSを公開するならconsumer要件またはpeer dependencyを明記する。
+`catharsiswatari-events`の本移行、A-05/A-06の実データ利用確認、実Cloudflare deploy、npm publish、GitHub Releaseはrepository実装とは分離した運用作業である。
 
-### 重複と旧実装
+## v0.1 blocker
 
-- 旧`src/lib/seo.ts`は残っておらず、canonicalの並行実装も確認されなかった。
-- BaseLayoutのlegacy `title` / `description` Propsはpackage公開前に削除し、`site`と`meta`へ統一した。
-- `git-content/types.ts`と`src/internal/github-api/types.ts`にはGitHub error code、rate-limit diagnostics、error optionsの同等定義がある。公開型とinternal型のdriftを防ぐため、公開名を維持したまま単一の型定義元へ寄せることを推奨する。
-- `SiteHeader`、`SiteFooter`、sample pages、`src/config/site.ts`、`src/content.config.ts`はsample siteから参照されており未使用ではない。ただしlibrary配布物には含めず、exampleとしての位置づけを明記する。
-- `src/features/*`の内部moduleにはcross-file利用のためexportされたhelperがある。TypeScript上の不要exportとは断定しないが、package `exports`で到達不能にする。
-
-### test強化
-
-- package artifactに対するruntime importとtype resolutionは追加済み。Astro consumer buildはP0-3以降で追加する。
-- actual CI workflow自体のYAML parseと必須commandをA-10 template testと同様に検証する。
-- Nodeだけでなく、Cloudflare Workers互換fetchまたはbrowser bundlerでGitHub clientがbundleできることをconsumer testで確認する。特にbrowserでは`User-Agent` headerの制約があるため、対応runtimeの表現を文書化する。
-- packed tarballのfile allowlist testを維持し、source internal、tests、sample siteが再混入しないようにする。
-
-### READMEと文書導線
-
-- READMEの構成図を現在の`features`、`internal`、`templates`、deployment docsを含む形へ更新する。
-- 各A項目のAPI文書への一覧リンクをREADMEへ追加する。
-- package利用者向けTypeScript Quick Startとrepository開発者向けSetupは分離済み。P0-3でAstro Quick Startを追加する。
-- `extraction-plan.md`のA一覧を「実装済み」と判別できるstatus列または完了一覧へ更新する。
-
-## 保留
-
-### B候補のうちv0.1完成に必須なもの
-
-**該当なし。**
-
-A-01〜A-10とpackage配布境界だけで、Site Meta、Sitemap、Theme、Content Source、GitHub保存、Deployment状態、Deployment雛形というv0.1の核を成立させられる。B候補を追加しても、現在のrelease blockerであるexports、型定義、配布物、consumer testは解消しない。v0.1完成のために新featureを増やすべきではない。
-
-### 実利用確認まで保留すべきB候補
-
-- B-01: Content Bundle検証は、2つの派生projectでschema注入と関係検証の共通形が確認できるまで保留する。
-- B-02〜B-05: asset処理、画像変換、upload UIは形式、preset、runtime依存が大きいため実利用まで保留する。
-- B-04b、B-10〜B-13: ThemeSwitcherとUI部品は、`extraction-plan.md`記載の2 project利用条件を満たすまで保留する。
-- B-06〜B-09: Admin HTTP、draft、diff、polling UIはAdmin Foundation着手時まで保留する。
-
-QR code、管理画面Shell全体も、現在のv0.1 package完成とは切り離す。
+**なし。**
 
 ## v0.1完成条件
 
-次をすべて満たした時点で、npm packageとしてv0.1完成と判定する。
+1. **完了:** A-01〜A-10の実装、テスト、文書。
+2. **完了:** 公開5 feature、BaseLayout、CSSのexportsとESM/declaration build。
+3. **完了:** private境界、配布allowlist、sideEffects、dependencyとmetadata方針。
+4. **完了:** packed packageのruntime / type / Node ESM / minimal Astro consumer検証。
+5. **完了:** README、architecture、conventions、roadmap、extraction plan、API文書、ADRの同期。
+6. **完了:** 通常CIのcheck / test / package build / distribution test / static build。
+7. **完了:** CHANGELOGと手動release checklist。
+8. **公開時確認:** release担当者がchecklistを実行し、version、tarball、license、secret非混入、派生project A-05/A-06利用状況を確認してnpm publishを手動判断する。
 
-1. **完了:** 5 feature、Astro Layout、CSSの公開pathが確定している。
-2. **完了:** `exports`が公開subpathだけを許可し、root、共有internal、feature内部fileのdeep importを拒否する。
-3. **完了:** ESM artifactと`.d.ts`を再現可能に生成できるlibrary buildがある。
-4. **完了:** `files` allowlistによりtarballが必要なartifact、template、README、LICENSEだけを含む。
-5. **完了:** `BaseLayout`がsample configやconsumer非保証のpath aliasに依存せず、SiteConfig注入契約とstyle責務が確定している。
-6. **完了:** Custom Propertiesを含む公開CSS artifactと`sideEffects`方針が定義されている。
-7. **完了:** 実package名を使う最小Astro consumerがあり、packed packageでcheckとstatic buildが成功する。
-8. **完了:** installed package subpathを対象にしたruntime API、型、非公開境界testがある。
-9. 未使用`zod`の除去と現段階のAstro dependency区分は完了。Sass、version、license、repository情報など残るmetadataをrelease方針に合わせる。
-10. README、conventions、architecture、roadmap、API文書、ADRが確定したpackage境界と実装状態に一致する。
-11. CIで既存のcheck / test / buildに加え、library build、pack、consumer testを実行する。
-12. A-05/A-06の派生project consumer test実施状況を確認し、未実施ならrelease checklistへ残す。
-13. `npm run check`、`npm run test`、`npm run build`が成功する。
+## 次に行う作業
 
-## 次に実装すべき作業
+release readiness後の優先順は次のとおりとする。新feature実装ではなく、公開運用と実利用による検証を優先する。
 
-優先順は次の最大5件とする。新しいB featureよりpackage完成を優先する。
+1. release checklistを実行し、tarballとrelease notesを最終確認する。
+2. `catharsiswatari-events`でA-05/A-06を実データに対して確認する。
+3. npm publishをrelease担当者が手動判断する。
+4. 派生projectから得た互換性feedbackを記録する。
+5. B候補は2 projectでの共通需要が確認されたものだけを次期計画へ移す。
 
-1. **残るrelease文書とADRを同期する**: architecture、roadmap、extraction-plan、dependency / hosting判断を現在状態へ合わせる。
-2. **release metadataを仕上げる**: repository情報、Node / npm version方針を整える。
-3. **package検証をCI契約として明記する**: library build、pack、minimal consumerの継続実行を固定する。
-4. **派生project consumer確認を行う**: A-05/A-06を含む実package利用を確認する。
+## 最終検証
 
-## 監査時の検証記録
+この監査更新後のrepository状態に対して、次を成功させる。
 
-監査では次を確認した。
-
-- repository全fileと`src/features`、`src/internal`、`src/layouts`、`templates`、`tests`の参照関係
-- 全featureの`index.ts`と公開API test
-- `package.json`、`package-lock.json`、`tsconfig.json`、`astro.config.mjs`、`.nvmrc`
-- `.github/workflows/ci.yml`のYAML parseと実行command
-- `npm pack --dry-run --json`による現行tarball候補
-- `npm run check`、`npm run test`、`npm run build`の結果
-
-最終3 commandの実行結果は、この監査文書作成後のrepository状態に対して確認する。
+```sh
+npm run check
+npm run test
+npm run build
+npm pack --dry-run
+```

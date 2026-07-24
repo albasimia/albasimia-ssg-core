@@ -65,6 +65,7 @@ beforeAll(() => {
       "--no-fund",
       "--no-package-lock",
       "--offline",
+      "--legacy-peer-deps",
       tarballPath,
       yamlPackageDirectory,
     ],
@@ -95,7 +96,7 @@ afterAll(() => {
 describe("npm package distribution", () => {
   it("contains only the package artifacts, metadata, and deployment templates", () => {
     const paths = packResult.files.map((file) => file.path);
-    const allowedFiles = new Set(["LICENSE", "README.md", "package.json"]);
+    const allowedFiles = new Set(["CHANGELOG.md", "LICENSE", "README.md", "package.json"]);
     const allowedPrefixes = [
       "package-dist/features/site-meta/",
       "package-dist/features/sitemap/",

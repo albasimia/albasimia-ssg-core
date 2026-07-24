@@ -87,7 +87,6 @@ Gitを正本としてコンテンツを読み書きするための基盤。
 - 競合検知
 - 差分生成
 - Commit履歴取得
-- Actions状態取得
 - 保存前検証
 
 編集フォームの具体的な項目やドメイン検証は派生プロジェクト側に置く。
@@ -106,6 +105,12 @@ Gitを正本としてコンテンツを読み書きするための基盤。
 - デプロイ状態の確認
 
 Cloudflare Pagesを最初の標準対象とするが、ASCの中心設計をCloudflare固有APIへ依存させない。
+
+GitHub Actionsの状態取得は`deploy-status`としてDeployment Foundationに置く。GitOps Foundationの`git-content`とは非公開のGitHub transportだけを共有し、Repository content操作とActions APIを混在させない。
+
+## Repositoryとpackageの役割
+
+repository内のpages、components、content、config、public assetsは、ASCの開発とstatic buildを検証するsample siteである。npm packageは`package.json`の明示的subpathだけを公開し、sample siteを配布しない。派生projectはpackageのfeature、BaseLayout、compile済みCSSを利用し、固有のページ、Content Collection、デザイン、業務ロジックを自身で保持する。
 
 ## 依存方向
 
