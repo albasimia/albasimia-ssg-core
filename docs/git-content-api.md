@@ -35,7 +35,7 @@ export class GitHubApiError extends Error {
 }
 ```
 
-HTTP request、response bodyのparse、header診断、secret除去を行うhelperは内部実装とし、`index.ts`から公開しない。派生側はraw pathを組み立てず、`GitHubClient`の各methodを使う。
+HTTP request、response bodyのparse、header診断、secret除去を行うhelperは`src/internal/github-api`の共有内部実装とし、`index.ts`から公開しない。派生側はraw pathを組み立てず、`GitHubClient`の各methodを使う。この内部実装はA-09の`deploy-status`でも利用するが、Actions API自体は`git-content`へ追加しない。
 
 ## 設定
 
