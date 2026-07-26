@@ -1,7 +1,7 @@
-# ASC v0.1.1 completion audit
+# ASC v0.1.2 completion audit
 
 - 最終監査日: 2026-07-25
-- 対象version: `0.1.1`
+- 対象version: `0.1.2`
 - 対象: README、philosophy、architecture、conventions、roadmap、ADR、extraction plan、source、layout、style、template、test、package設定、Astro設定、CI、公開API
 - 判定: **v0.1 release ready**
 
@@ -9,7 +9,7 @@
 
 A-01〜A-10とP0-1〜P0-5は、repository内の実装、テスト、文書、npm配布境界として完了した。5つのTypeScript feature、BaseLayout、compile済みCSS、deployment templateは実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認する。`0.1.1`ではGitHub dependency install時にも`prepare`で`package-dist/`を生成する。
 
-repository内に`0.1.1` releaseを阻害するblockerはない。生成物を持たない既存`v0.1.0` tagはconsumer dependencyに使用せず、修正版tagは`v0.1.1`とする。registryへのpublishは自動化せず、`docs/release-checklist.md`に従う手動判断とする。`catharsiswatari-events`でのA-05/A-06実利用確認は公開前checklistに残すが、本repositoryの実装blockerや移行作業には含めない。
+repository内に`0.1.2` releaseを阻害するblockerはない。生成物を持たない既存`v0.1.0` tagはconsumer dependencyに使用しない。`v0.1.2`ではGitHub dependency対応に加えて`asc init`による最小consumer生成を提供する。registryへのpublishは自動化せず、`docs/release-checklist.md`に従う手動判断とする。`catharsiswatari-events`でのA-05/A-06実利用確認は公開前checklistに残すが、本repositoryの実装blockerや移行作業には含めない。
 
 ## A-01〜A-10
 
@@ -43,7 +43,8 @@ repository内に`0.1.1` releaseを阻害するblockerはない。生成物を持
 
 ### metadata、dependency、CI
 
-- package名、version `0.1.1`、description、MIT license、author、repository、homepage、bugs、keywords、Node engine、public publish設定を定義した。
+- package名、version `0.1.2`、description、MIT license、author、repository、homepage、bugs、keywords、Node engine、public publish設定を定義した。
+- installed packageの`asc init`は最小Astro構成を生成し、packed distribution testで生成siteのstatic buildを確認する。
 - `yaml`はruntime dependencyである。公開Layoutを使うconsumer向けにAstro 7をpeer dependencyとし、ASCの検証用dev dependencyにも保持する。Sassはbuild専用dev dependencyである。
 - `.nvmrc`とenginesの最小versionを22.12.0へ揃えた。
 - 通常CIは最小権限で`npm ci`、check、test、buildを実行する。testはpackage buildと実tarball distribution testを含み、buildはpackage buildとsample static buildを含む。publishと実deployは行わない。

@@ -5,6 +5,7 @@
 - module形式: ESMのみ
 - 対象: `docs/completion-audit.md`のP0-1、P0-2
 - Astro公開物: `BaseLayout.astro`、compile済みCSS
+- CLI: `asc init [directory]`
 - 対象外: raw SCSS、ThemeSwitcher、手動theme
 
 ## 公開subpath
@@ -24,6 +25,8 @@ Astro向けに次も公開する。
 - `albasimia-ssg-core/layouts/BaseLayout.astro`
 - `albasimia-ssg-core/styles/theme.css`
 - `albasimia-ssg-core/styles/global.css`
+
+packageの`bin`として`asc`を公開する。`asc init [directory]`は公開subpathだけを利用する最小Astro siteを生成する。既存scaffold fileは上書きせず、install、network access、Git操作を行わない。
 
 利用側はpackageをinstallし、必要なfeatureだけを明示的にimportする。
 
@@ -82,6 +85,7 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 - package用`BaseLayout.astro`
 - compile済み`theme.css`と`global.css`
 - `templates/deployment/cloudflare-pages/`
+- `bin/asc.mjs`
 - `README.md`
 - `CHANGELOG.md`
 - `LICENSE`
@@ -118,6 +122,7 @@ package root exportはないため、`main`、`module`、root用`types`は設定
 - tarball fileのallowlist
 - source、test、sample、CI、raw SCSSが含まれないこと
 - installed packageを使う最小Astro fixtureのcheckとstatic build
+- installed packageの`asc init`が生成したsiteのstatic build
 - 生成HTMLのtitle、canonical、descriptionと公開CSS contract
 
 通常CIの`npm run test`がこのpacked distribution testを含み、`npm run build`のlifecycleがpackage buildとsample site buildを実行する。CIからnpm publishや実deployは行わない。

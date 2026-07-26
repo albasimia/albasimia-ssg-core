@@ -1,6 +1,6 @@
 {
   "name": "albasimia-ssg-core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "type": "module",
   "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
@@ -24,6 +24,9 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "bin": {
+    "asc": "./bin/asc.mjs"
   },
   "exports": {
     "./site-meta": {
@@ -59,6 +62,7 @@
     "package-dist/internal/github-api/",
     "package-dist/layouts/",
     "package-dist/styles/",
+    "bin/",
     "templates/deployment/cloudflare-pages/",
     "README.md",
     "CHANGELOG.md",

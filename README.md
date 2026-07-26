@@ -70,10 +70,32 @@ ASCは、次の機能を提供しません。
 
 ## セットアップ
 
-### npm packageを利用する
+### 最小サイトを作成する
+
+空のdirectoryへASCをinstallし、packageに含まれるCLIで最小構成を生成できます。
 
 ```sh
-npm install astro@^7.1.1 albasimia-ssg-core@^0.1.1
+mkdir my-site
+cd my-site
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.2
+npx asc init .
+npm run build
+```
+
+GitHub tagを利用する場合は、修正版tagをdependencyに指定します。
+
+```sh
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.2
+npx asc init .
+npm run build
+```
+
+`asc init [directory]`は`package.json`、`.gitignore`、Astro設定、TypeScript設定、SiteConfig、BaseLayoutを使うindex page、sitemap endpointを生成します。既存のscaffold fileは上書きせず停止し、追加installや外部通信は行いません。
+
+### npm packageを手動構成で利用する
+
+```sh
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.2
 ```
 
 Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro`のpeer dependencyです。SassはASCのbuild時にだけ使用し、consumerには不要です。
@@ -81,7 +103,7 @@ Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro
 GitHub tagから直接利用する場合は、`package-dist/`を生成する`prepare`を含む`v0.1.1`以降を指定します。`v0.1.0`は生成物を含まないため使用しません。
 
 ```sh
-npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.1
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.2
 ```
 
 npm registry版とGitHub版のどちらも、install後は同じ公開subpathを利用できます。GitHub版のinstall中はASC自身のbuild dependencyが一時的に使われますが、consumerがSassやTypeScriptを直接追加する必要はありません。

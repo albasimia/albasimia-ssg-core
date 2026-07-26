@@ -7,7 +7,7 @@
 - Package Foundation: 5つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを2026-07-25に実装済み
 - Package Foundation: BaseLayout / compile済みCSS公開と、installed packageによる最小Astro consumer check / buildを2026-07-25に実装済み
 - Release Foundation: metadata、ADR、release checklist、通常CIのpackage/pack consumer検証を2026-07-25に確定
-- 判定: repository内にv0.1 blockerはなく、GitHub dependency修正版`0.1.1`はrelease ready
+- 判定: repository内にv0.1 blockerはなく、最小consumer CLIを含む`0.1.2`はrelease ready
 
 ## v0.1 Foundation
 

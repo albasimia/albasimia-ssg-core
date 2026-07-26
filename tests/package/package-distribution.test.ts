@@ -114,6 +114,7 @@ describe("npm package distribution", () => {
     const paths = packResult.files.map((file) => file.path);
     const allowedFiles = new Set(["CHANGELOG.md", "LICENSE", "README.md", "package.json"]);
     const allowedPrefixes = [
+      "bin/",
       "package-dist/features/site-meta/",
       "package-dist/features/sitemap/",
       "package-dist/features/content-source/",
@@ -131,6 +132,7 @@ describe("npm package distribution", () => {
     expect(paths).toContain("package-dist/layouts/BaseLayout.astro");
     expect(paths).toContain("package-dist/styles/theme.css");
     expect(paths).toContain("package-dist/styles/global.css");
+    expect(paths).toContain("bin/asc.mjs");
     expect(paths).toContain("templates/deployment/cloudflare-pages/cloudflare-pages.yml");
     expect(paths.every((path) =>
       allowedFiles.has(path) || allowedPrefixes.some((prefix) => path.startsWith(prefix))
@@ -254,6 +256,36 @@ describe("npm package distribution", () => {
     expect(`${html}\n${emittedStyles}`).toContain("--asc-color-background-light");
     expect(readFileSync(join(outputDirectory, "sitemap.xml"), "utf8"))
       .toContain("<loc>https://consumer.example/</loc>");
+  }, 30_000);
+
+  it("initializes and builds a site through the installed asc binary", () => {
+    const initializedDirectory = join(temporaryRoot, "initialized-consumer");
+    const installedCli = join(consumerDirectory, "node_modules", ".bin", "asc");
+
+    execFileSync(installedCli, ["init", initializedDirectory], {
+      cwd: consumerDirectory,
+      encoding: "utf8",
+      stdio: "pipe",
+    });
+    symlinkSync(
+      join(consumerDirectory, "node_modules"),
+      join(initializedDirectory, "node_modules"),
+      "dir",
+    );
+
+    expect(() => execFileSync(
+      process.execPath,
+      [astroCli, "build"],
+      { cwd: initializedDirectory, encoding: "utf8", stdio: "pipe" },
+    )).not.toThrow();
+
+    const html = readFileSync(join(initializedDirectory, "dist", "index.html"), "utf8");
+    expect(html).toContain("<title>Home | Example</title>");
+    expect(html).toContain("Hello ASC");
+    expect(readFileSync(
+      join(initializedDirectory, "dist", "sitemap.xml"),
+      "utf8",
+    )).toContain("<loc>https://example.com/</loc>");
   }, 30_000);
 });
 
