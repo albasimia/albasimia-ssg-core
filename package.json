@@ -1,6 +1,6 @@
 {
   "name": "albasimia-ssg-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "type": "module",
   "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
@@ -82,7 +82,7 @@
     "check": "astro check",
     "pretest": "npm run build:package",
     "test": "vitest run",
-    "prepack": "npm run build:package"
+    "prepare": "npm run build:package"
   },
   "dependencies": {
     "yaml": "^2.9.0"

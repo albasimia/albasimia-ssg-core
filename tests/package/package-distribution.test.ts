@@ -94,6 +94,22 @@ afterAll(() => {
 });
 
 describe("npm package distribution", () => {
+  it("builds package artifacts for GitHub dependency installs via prepare", () => {
+    const packageJson = JSON.parse(
+      readFileSync(join(projectRoot, "package.json"), "utf8"),
+    ) as {
+      scripts?: Record<string, string>;
+      dependencies?: Record<string, string>;
+      peerDependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+
+    expect(packageJson.scripts?.prepare).toBe("npm run build:package");
+    expect(packageJson.devDependencies?.sass).toBeDefined();
+    expect(packageJson.dependencies?.sass).toBeUndefined();
+    expect(packageJson.peerDependencies?.sass).toBeUndefined();
+  });
+
   it("contains only the package artifacts, metadata, and deployment templates", () => {
     const paths = packResult.files.map((file) => file.path);
     const allowedFiles = new Set(["CHANGELOG.md", "LICENSE", "README.md", "package.json"]);

@@ -57,6 +57,8 @@ package rootの`albasimia-ssg-core`にはexportを設けない。
 - `npm run build`と`npm pack`の前にもpackage buildを実行する
 - Sassから`theme.css`と`global.css`をcompileし、package用BaseLayoutのstyle importを`global.css`へ置き換える
 
+`package-dist/`は生成物としてGit管理しない。npm registry向けのpack/publishとGitHub dependency installの双方で実行される`prepare`から`build:package`を呼ぶ。これによりtagに`package-dist/`がなくても、通常の`npm install github:albasimia/albasimia-ssg-core#v0.1.1`後にはexportsが参照する生成物が揃う。lifecycle scriptを無効化する`--ignore-scripts`はGitHub dependencyのinstall方法としてサポートしない。
+
 公開型は各subpathの`types` conditionから解決する。consumerが`src`またはTypeScript sourceを直接参照する必要はない。
 
 ## private境界
@@ -120,7 +122,7 @@ package root exportはないため、`main`、`module`、root用`types`は設定
 
 通常CIの`npm run test`がこのpacked distribution testを含み、`npm run build`のlifecycleがpackage buildとsample site buildを実行する。CIからnpm publishや実deployは行わない。
 
-公開前には次を実行する。
+公開前には次を実行する。`npm pack --dry-run`でも`prepare`が実行される。
 
 ```sh
 npm run check

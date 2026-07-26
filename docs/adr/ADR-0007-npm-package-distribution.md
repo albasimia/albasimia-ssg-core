@@ -11,6 +11,8 @@ TypeScript feature、Astro Layout、styleを、repository sourceへ直接依存�
 
 ASCをESM npm packageとして配布し、root barrelではなく明示的subpathだけを公開する。TypeScriptはJavaScriptとdeclarationへbuildし、BaseLayoutとcompile済みCSSを配布する。Astro 7はLayout consumerに必要なpeer dependencyかつASCのdev dependency、SassはCSS生成専用のdev dependencyとする。raw SCSS、sample site、tests、sourceは配布しない。
 
+`package-dist/`はGit管理せず、npmの`prepare` lifecycleで生成する。`prepare`はnpm pack/publishに加えGit dependencyのinstall時にも実行されるため、registry packageとGitHub tagの公開subpathを同じ生成処理で保証する。GitHub dependencyでlifecycle scriptを無効化するinstallはサポートしない。
+
 ## 理由と影響
 
 feature境界とprivate implementationをexportsで維持でき、consumerにSassやsource aliasを要求しない。Astroを使わないTypeScript subpathの利用者にもpeer dependency warningが生じ得るが、単一packageでLayoutを正式提供する契約を優先する。

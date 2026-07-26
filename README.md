@@ -73,10 +73,18 @@ ASCは、次の機能を提供しません。
 ### npm packageを利用する
 
 ```sh
-npm install astro@^7.1.1 albasimia-ssg-core
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.1
 ```
 
 Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro`のpeer dependencyです。SassはASCのbuild時にだけ使用し、consumerには不要です。
+
+GitHub tagから直接利用する場合は、`package-dist/`を生成する`prepare`を含む`v0.1.1`以降を指定します。`v0.1.0`は生成物を含まないため使用しません。
+
+```sh
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.1
+```
+
+npm registry版とGitHub版のどちらも、install後は同じ公開subpathを利用できます。GitHub版のinstall中はASC自身のbuild dependencyが一時的に使われますが、consumerがSassやTypeScriptを直接追加する必要はありません。
 
 ASCはroot exportを設けず、機能境界ごとのsubpathを公開します。
 
