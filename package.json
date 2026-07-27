@@ -1,6 +1,6 @@
 {
   "name": "albasimia-ssg-core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "type": "module",
   "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
@@ -50,6 +50,16 @@
       "import": "./package-dist/features/deploy-status/index.js"
     },
     "./layouts/BaseLayout.astro": "./package-dist/layouts/BaseLayout.astro",
+    "./components/ArrowLink.astro": "./package-dist/components/ArrowLink.astro",
+    "./components/Container.astro": "./package-dist/components/Container.astro",
+    "./components/MetaList.astro": "./package-dist/components/MetaList.astro",
+    "./components/Section.astro": "./package-dist/components/Section.astro",
+    "./components/SectionHeader.astro": "./package-dist/components/SectionHeader.astro",
+    "./components/SkipLink.astro": "./package-dist/components/SkipLink.astro",
+    "./components/Tag.astro": "./package-dist/components/Tag.astro",
+    "./components/ThemeBoot.astro": "./package-dist/components/ThemeBoot.astro",
+    "./components/ThemeSwitcher.astro": "./package-dist/components/ThemeSwitcher.astro",
+    "./components/VisuallyHidden.astro": "./package-dist/components/VisuallyHidden.astro",
     "./styles/theme.css": "./package-dist/styles/theme.css",
     "./styles/global.css": "./package-dist/styles/global.css"
   },
@@ -61,6 +71,7 @@
     "package-dist/features/deploy-status/",
     "package-dist/internal/github-api/",
     "package-dist/layouts/",
+    "package-dist/components/",
     "package-dist/styles/",
     "bin/",
     "templates/deployment/cloudflare-pages/",

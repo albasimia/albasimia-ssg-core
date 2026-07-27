@@ -1,0 +1,20 @@
+---
+interface Props { tone?: "default" | "accent"; }
+const { tone = "default" } = Astro.props;
+---
+<span class:list={["asc-tag", `asc-tag--${tone}`]}><slot /></span>
+<style>
+  .asc-tag {
+    display: inline-flex;
+    width: fit-content;
+    padding: var(--asc-space-1) var(--asc-space-2);
+    border: 1px solid var(--asc-color-border);
+    color: var(--asc-color-muted);
+    font-size: var(--asc-font-size-small);
+    line-height: 1.4;
+  }
+  .asc-tag--accent {
+    border-color: var(--asc-color-accent);
+    color: var(--asc-color-accent);
+  }
+</style>

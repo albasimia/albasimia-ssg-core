@@ -2,6 +2,13 @@
 
 All notable changes to this package are documented here.
 
+## 0.1.3 - 2026-07-27
+
+- Added reusable Astro UI primitives for layout, section headings, metadata, tags, links, skip navigation, and visually hidden text.
+- Added an opt-in Light / Dark / Auto theme boot script and accessible theme switcher.
+- Added resolved light/dark theme selectors and muted color tokens while keeping all tokens consumer-overridable.
+- Kept site navigation, footer content, project cards, and domain content in derived projects.
+
 ## 0.1.2 - 2026-07-26
 
 - Added the `asc init [directory]` CLI for generating a minimal static Astro consumer.

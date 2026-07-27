@@ -77,7 +77,7 @@ ASCは、次の機能を提供しません。
 ```sh
 mkdir my-site
 cd my-site
-npm install astro@^7.1.1 albasimia-ssg-core@^0.1.2
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.3
 npx asc init .
 npm run build
 ```
@@ -85,7 +85,7 @@ npm run build
 GitHub tagを利用する場合は、修正版tagをdependencyに指定します。
 
 ```sh
-npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.2
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.3
 npx asc init .
 npm run build
 ```
@@ -95,7 +95,7 @@ npm run build
 ### npm packageを手動構成で利用する
 
 ```sh
-npm install astro@^7.1.1 albasimia-ssg-core@^0.1.2
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.3
 ```
 
 Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro`のpeer dependencyです。SassはASCのbuild時にだけ使用し、consumerには不要です。
@@ -103,7 +103,7 @@ Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro
 GitHub tagから直接利用する場合は、`package-dist/`を生成する`prepare`を含む`v0.1.1`以降を指定します。`v0.1.0`は生成物を含まないため使用しません。
 
 ```sh
-npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.2
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.3
 ```
 
 npm registry版とGitHub版のどちらも、install後は同じ公開subpathを利用できます。GitHub版のinstall中はASC自身のbuild dependencyが一時的に使われますが、consumerがSassやTypeScriptを直接追加する必要はありません。
@@ -142,6 +142,35 @@ const site = defineSiteConfig({
 ```
 
 CSS単体のsubpathは`albasimia-ssg-core/styles/theme.css`と`albasimia-ssg-core/styles/global.css`です。raw SCSSは公開しません。詳細は[package公開方法](docs/package-exports.md)を参照してください。
+
+### UI Foundationを利用する
+
+共通UIは個別subpathから必要なものだけimportします。テーマ切替を使う場合は、同じ`storageKey`を`ThemeBoot`と`ThemeSwitcher`へ渡します。`ThemeBoot`はFOUCを抑えるため`BaseLayout`の`head` slotへ配置します。
+
+```astro
+---
+import BaseLayout from "albasimia-ssg-core/layouts/BaseLayout.astro";
+import Container from "albasimia-ssg-core/components/Container.astro";
+import SkipLink from "albasimia-ssg-core/components/SkipLink.astro";
+import ThemeBoot from "albasimia-ssg-core/components/ThemeBoot.astro";
+import ThemeSwitcher from "albasimia-ssg-core/components/ThemeSwitcher.astro";
+---
+
+<BaseLayout site={site} meta={{ title: "Home" }}>
+  <ThemeBoot slot="head" storageKey="example-theme" />
+  <SkipLink href="#main-content" label="本文へ移動" />
+  <header>
+    <Container>
+      <ThemeSwitcher storageKey="example-theme" />
+    </Container>
+  </header>
+  <main id="main-content">
+    <Container><slot /></Container>
+  </main>
+</BaseLayout>
+```
+
+サイト名、Navigation、Footer、Project Cardなどの固有情報を持つUIは派生プロジェクト側で実装します。公開コンポーネント、テーマ属性、イベントの契約は[UI Foundation](docs/ui-foundation.md)を参照してください。
 
 ### Repositoryを開発する
 

@@ -1,0 +1,20 @@
+---
+interface Props {
+  class?: string;
+  size?: "wide" | "prose";
+}
+
+const { class: className, size = "wide" } = Astro.props;
+---
+
+<div class:list={["asc-container", `asc-container--${size}`, className]}><slot /></div>
+
+<style>
+  .asc-container {
+    width: min(calc(100% - var(--asc-page-gutter) * 2), var(--asc-content-width));
+    margin-inline: auto;
+  }
+  .asc-container--prose {
+    width: min(calc(100% - var(--asc-page-gutter) * 2), var(--asc-prose-width));
+  }
+</style>

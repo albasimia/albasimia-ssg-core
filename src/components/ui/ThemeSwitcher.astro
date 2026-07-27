@@ -1,0 +1,98 @@
+---
+interface Props {
+  storageKey?: string;
+  groupLabel?: string;
+  lightLabel?: string;
+  darkLabel?: string;
+  autoLabel?: string;
+  lightText?: string;
+  darkText?: string;
+  autoText?: string;
+}
+
+const {
+  storageKey = "asc-theme-preference",
+  groupLabel = "Display theme",
+  lightLabel = "Light theme",
+  darkLabel = "Dark theme",
+  autoLabel = "Follow system theme",
+  lightText = "LIGHT",
+  darkText = "DARK",
+  autoText = "AUTO",
+} = Astro.props;
+---
+
+<div class="asc-theme-switcher" role="group" aria-label={groupLabel} data-asc-theme-switcher data-storage-key={storageKey}>
+  <button type="button" data-asc-theme-option="light" aria-label={lightLabel} aria-pressed="false">{lightText}</button>
+  <button type="button" data-asc-theme-option="dark" aria-label={darkLabel} aria-pressed="false">{darkText}</button>
+  <button type="button" data-asc-theme-option="auto" aria-label={autoLabel} aria-pressed="false">{autoText}</button>
+</div>
+
+<script>
+  const options = ["light", "dark", "auto"] as const;
+  type ThemeOption = typeof options[number];
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const isThemeOption = (value: string | null): value is ThemeOption =>
+    value !== null && options.includes(value as ThemeOption);
+
+  const switchers = Array.from(document.querySelectorAll<HTMLElement>("[data-asc-theme-switcher]"));
+  const storageKey = document.documentElement.dataset.ascThemeStorageKey
+    ?? switchers[0]?.dataset.storageKey
+    ?? "asc-theme-preference";
+
+  const applyTheme = (preference: ThemeOption, persist = false) => {
+    const resolved = preference === "auto" ? (media.matches ? "dark" : "light") : preference;
+    document.documentElement.dataset.ascThemePreference = preference;
+    document.documentElement.dataset.ascThemeResolved = resolved;
+    document.querySelectorAll<HTMLButtonElement>("[data-asc-theme-option]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.ascThemeOption === preference));
+    });
+    if (persist) {
+      try { localStorage.setItem(storageKey, preference); } catch {}
+    }
+    document.dispatchEvent(new CustomEvent("asc:theme-change", { detail: { preference, resolved } }));
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-asc-theme-option]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const preference = button.dataset.ascThemeOption ?? null;
+      if (isThemeOption(preference)) applyTheme(preference, true);
+    });
+  });
+  media.addEventListener("change", () => {
+    if (document.documentElement.dataset.ascThemePreference === "auto") applyTheme("auto");
+  });
+  window.addEventListener("storage", (event) => {
+    if (event.key === storageKey && isThemeOption(event.newValue)) applyTheme(event.newValue);
+  });
+  const initial = document.documentElement.dataset.ascThemePreference ?? null;
+  applyTheme(isThemeOption(initial) ? initial : "auto");
+</script>
+
+<style>
+  .asc-theme-switcher {
+    display: inline-grid;
+    grid-auto-flow: column;
+    border: 1px solid var(--asc-color-border);
+  }
+  button {
+    min-height: 2.25rem;
+    padding: .4rem .6rem;
+    border: 0;
+    color: var(--asc-color-muted);
+    background: transparent;
+    font: inherit;
+    font-size: var(--asc-font-size-small);
+    font-weight: var(--asc-font-weight-bold);
+    letter-spacing: var(--asc-letter-spacing-wide);
+    cursor: pointer;
+  }
+  button + button { border-left: 1px solid var(--asc-color-border); }
+  button:hover { color: var(--asc-color-accent); }
+  button:focus-visible { outline: 2px solid var(--asc-color-accent); outline-offset: 2px; }
+  button[aria-pressed="true"] {
+    color: var(--asc-color-text);
+    box-shadow: inset 0 -2px var(--asc-color-accent);
+  }
+</style>

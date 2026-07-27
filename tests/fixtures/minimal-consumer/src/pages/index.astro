@@ -1,5 +1,9 @@
 ---
 import BaseLayout from "albasimia-ssg-core/layouts/BaseLayout.astro";
+import Container from "albasimia-ssg-core/components/Container.astro";
+import SkipLink from "albasimia-ssg-core/components/SkipLink.astro";
+import ThemeBoot from "albasimia-ssg-core/components/ThemeBoot.astro";
+import ThemeSwitcher from "albasimia-ssg-core/components/ThemeSwitcher.astro";
 import { site } from "../site.js";
 ---
 
@@ -7,5 +11,8 @@ import { site } from "../site.js";
   site={site}
   meta={{ title: "Home", description: "Consumer page description" }}
 >
-  <main class="container">Minimal consumer</main>
+  <ThemeBoot slot="head" storageKey="consumer-theme" />
+  <SkipLink />
+  <ThemeSwitcher storageKey="consumer-theme" />
+  <main id="main-content"><Container>Minimal consumer</Container></main>
 </BaseLayout>

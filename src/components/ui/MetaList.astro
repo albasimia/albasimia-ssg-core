@@ -1,0 +1,32 @@
+---
+interface Item { term: string; value: string | readonly string[]; }
+interface Props { items: readonly Item[]; class?: string; }
+const { items, class: className } = Astro.props;
+---
+<dl class:list={["asc-meta-list", className]}>
+  {items.map((item) => (
+    <div>
+      <dt>{item.term}</dt>
+      <dd>{Array.isArray(item.value) ? item.value.join(" / ") : item.value}</dd>
+    </div>
+  ))}
+</dl>
+<style>
+  .asc-meta-list { margin: 0; border-top: 1px solid var(--asc-color-border); }
+  .asc-meta-list > div {
+    display: grid;
+    grid-template-columns: minmax(7rem, 1fr) minmax(0, 2fr);
+    gap: var(--asc-space-4);
+    padding-block: var(--asc-space-4);
+    border-bottom: 1px solid var(--asc-color-border);
+  }
+  dt {
+    color: var(--asc-color-accent);
+    font-size: var(--asc-font-size-small);
+    font-weight: var(--asc-font-weight-bold);
+  }
+  dd { margin: 0; }
+  @media (max-width: 40rem) {
+    .asc-meta-list > div { grid-template-columns: 1fr; gap: var(--asc-space-1); }
+  }
+</style>

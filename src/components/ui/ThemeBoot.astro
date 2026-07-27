@@ -1,0 +1,30 @@
+---
+interface Props {
+  storageKey?: string;
+  defaultPreference?: "light" | "dark" | "auto";
+}
+
+const {
+  storageKey = "asc-theme-preference",
+  defaultPreference = "auto",
+} = Astro.props;
+---
+
+<script is:inline define:vars={{ storageKey, defaultPreference }}>
+  (() => {
+    const root = document.documentElement;
+    const allowed = ["light", "dark", "auto"];
+    let preference = defaultPreference;
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved && allowed.includes(saved)) preference = saved;
+    } catch {}
+    const resolved = preference === "auto"
+      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      : preference;
+    root.classList.add("js");
+    root.dataset.ascThemeStorageKey = storageKey;
+    root.dataset.ascThemePreference = preference;
+    root.dataset.ascThemeResolved = resolved;
+  })();
+</script>

@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as sass from "sass";
@@ -6,12 +6,15 @@ import * as sass from "sass";
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outputRoot = resolve(projectRoot, "package-dist");
 const layoutOutput = resolve(outputRoot, "layouts", "BaseLayout.astro");
+const componentsOutput = resolve(outputRoot, "components");
 const stylesOutput = resolve(outputRoot, "styles");
 
 rmSync(resolve(outputRoot, "layouts"), { recursive: true, force: true });
+rmSync(componentsOutput, { recursive: true, force: true });
 rmSync(stylesOutput, { recursive: true, force: true });
 mkdirSync(dirname(layoutOutput), { recursive: true });
 mkdirSync(stylesOutput, { recursive: true });
+cpSync(resolve(projectRoot, "src", "components", "ui"), componentsOutput, { recursive: true });
 
 const layoutSource = readFileSync(
   resolve(projectRoot, "src", "layouts", "BaseLayout.astro"),

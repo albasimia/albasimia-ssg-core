@@ -7,7 +7,8 @@
 - Package Foundation: 5つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを2026-07-25に実装済み
 - Package Foundation: BaseLayout / compile済みCSS公開と、installed packageによる最小Astro consumer check / buildを2026-07-25に実装済み
 - Release Foundation: metadata、ADR、release checklist、通常CIのpackage/pack consumer検証を2026-07-25に確定
-- 判定: repository内にv0.1 blockerはなく、最小consumer CLIを含む`0.1.2`はrelease ready
+- UI Foundation: `amano-pj`で確認したTheme / Container / Section / metadata等の最小Primitiveを実利用候補として抽出し、package consumer testを追加
+- 判定: repository内にv0.1 blockerはなく、UI Foundationの最小公開APIを含む`0.1.3`はrelease ready
 
 ## v0.1 Foundation
 
@@ -57,6 +58,8 @@ ASCの責務と設計原則に加え、A-01〜A-10とnpm配布基盤を含む最
 - Header
 - Footer
 - Light / Dark基礎テーマ
+
+2026-07-27時点では、`amano-pj`の初期実装から最小PrimitiveとThemeを先行抽出した。Stack / Grid / Button / Card / Header / Footerは責務の一致を実利用で確認してから追加する。
 
 ## v0.4 Content Foundation
 

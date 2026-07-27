@@ -17,6 +17,8 @@ describe("theme CSS contract", () => {
       "--asc-color-text-dark",
       "--asc-color-surface-light",
       "--asc-color-surface-dark",
+      "--asc-color-muted-light",
+      "--asc-color-muted-dark",
       "--asc-color-border-light",
       "--asc-color-border-dark",
       "--asc-color-accent-light",
@@ -44,6 +46,8 @@ describe("theme CSS contract", () => {
     expect(css).toContain("--asc-color-background: var(--asc-color-background-light)");
     expect(css).toContain("@media (prefers-color-scheme: dark)");
     expect(css).toContain("--asc-color-background: var(--asc-color-background-dark)");
+    expect(css).toContain(":root[data-asc-theme-resolved=light]");
+    expect(css).toContain(":root[data-asc-theme-resolved=dark]");
     expect(css).toContain("background: var(--asc-color-background)");
     expect(css).toContain("color: var(--asc-color-text)");
   });

@@ -122,6 +122,7 @@ describe("npm package distribution", () => {
       "package-dist/features/deploy-status/",
       "package-dist/internal/github-api/",
       "package-dist/layouts/",
+      "package-dist/components/",
       "package-dist/styles/",
       "templates/deployment/cloudflare-pages/",
     ];
@@ -130,6 +131,10 @@ describe("npm package distribution", () => {
     expect(paths).toContain("package-dist/features/site-meta/index.d.ts");
     expect(paths).toContain("package-dist/features/deploy-status/index.js");
     expect(paths).toContain("package-dist/layouts/BaseLayout.astro");
+    expect(paths).toContain("package-dist/components/Container.astro");
+    expect(paths).toContain("package-dist/components/SkipLink.astro");
+    expect(paths).toContain("package-dist/components/ThemeBoot.astro");
+    expect(paths).toContain("package-dist/components/ThemeSwitcher.astro");
     expect(paths).toContain("package-dist/styles/theme.css");
     expect(paths).toContain("package-dist/styles/global.css");
     expect(paths).toContain("bin/asc.mjs");
@@ -253,6 +258,10 @@ describe("npm package distribution", () => {
     expect(html).toContain("<title>Home | Consumer Site</title>");
     expect(html).toContain('<meta name="description" content="Consumer page description">');
     expect(html).toContain('<link rel="canonical" href="https://consumer.example/">');
+    expect(html).toContain('href="#main-content"');
+    expect(html).toContain('data-asc-theme-switcher');
+    expect(html).toContain('data-asc-theme-option="auto"');
+    expect(html).toContain('Minimal consumer');
     expect(`${html}\n${emittedStyles}`).toContain("--asc-color-background-light");
     expect(readFileSync(join(outputDirectory, "sitemap.xml"), "utf8"))
       .toContain("<loc>https://consumer.example/</loc>");
