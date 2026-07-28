@@ -7,7 +7,7 @@
 
 ## 総合判定
 
-A-01〜A-10とP0-1〜P0-5は、repository内の実装、テスト、文書、npm配布境界として完了した。5つのTypeScript feature、BaseLayout、compile済みCSS、deployment templateは実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認する。`0.1.1`ではGitHub dependency install時にも`prepare`で`package-dist/`を生成する。
+A-01〜A-10とP0-1〜P0-5は、repository内の実装、テスト、文書、npm配布境界として完了した。6つのTypeScript feature、BaseLayout、compile済みCSS、deployment templateは実package名の明示的subpathから利用できる。packed packageを一時consumerへinstallし、runtime、型、private import拒否、配布allowlist、Astro check / static build、生成HTMLとCSS contractを確認する。`0.1.1`ではGitHub dependency install時にも`prepare`で`package-dist/`を生成する。
 
 repository内に`0.1.2` releaseを阻害するblockerはない。生成物を持たない既存`v0.1.0` tagはconsumer dependencyに使用しない。`v0.1.2`ではGitHub dependency対応に加えて`asc init`による最小consumer生成を提供する。registryへのpublishは自動化せず、`docs/release-checklist.md`に従う手動判断とする。`catharsiswatari-events`でのA-05/A-06実利用確認は公開前checklistに残すが、本repositoryの実装blockerや移行作業には含めない。
 
@@ -28,7 +28,7 @@ repository内に`0.1.2` releaseを阻害するblockerはない。生成物を持
 ### 公開境界と配布物
 
 - `site-meta`、`sitemap`、`content-source`、`git-content`、`deploy-status`は各`src/features/*/index.ts`だけをsource公開境界とする。
-- packageは同名の5 subpath、`layouts/BaseLayout.astro`、`styles/theme.css`、`styles/global.css`だけを明示的にexportする。root exportとwildcard exportはない。
+- packageは同名の6 subpath、`layouts/BaseLayout.astro`、`styles/theme.css`、`styles/global.css`だけを明示的にexportする。root exportとwildcard exportはない。
 - `ResolvedPageMeta`、resolver、feature内部file、`src/internal`、compile済み共有internalはexports経由で到達できない。
 - ESM JavaScriptと`.d.ts`を`package-dist`へ生成し、Node ESMで解決できる`.js`付きrelative importを使用する。
 - `files` allowlistは生成物、deployment template、README、CHANGELOG、LICENSEだけを収録する。source、tests、sample site、CI、docs、raw SCSSは含めない。
@@ -58,7 +58,7 @@ repositoryのpages、components、content、config、public assetsはASC自身�
 
 ### P0-1: package entrypoint、exports、型定義、配布build（解消済み）
 
-5 featureのESM JavaScriptとdeclaration build、明示的subpath exports、Node ESM検証を実装した。
+6 featureのESM JavaScriptとdeclaration build、明示的subpath exports、Node ESM検証を実装した。
 
 ### P0-2: 配布allowlistとprivate境界（解消済み）
 
@@ -95,7 +95,7 @@ B-01〜B-13、ThemeSwitcher、Admin UI、画像処理、polling UI、QR code、�
 ## v0.1完成条件
 
 1. **完了:** A-01〜A-10の実装、テスト、文書。
-2. **完了:** 公開5 feature、BaseLayout、CSSのexportsとESM/declaration build。
+2. **完了:** 公開6 feature、BaseLayout、CSSのexportsとESM/declaration build。
 3. **完了:** private境界、配布allowlist、sideEffects、dependencyとmetadata方針。
 4. **完了:** packed packageのruntime / type / Node ESM / minimal Astro consumer検証。
 5. **完了:** README、architecture、conventions、roadmap、extraction plan、API文書、ADRの同期。

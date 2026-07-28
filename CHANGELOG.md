@@ -2,6 +2,13 @@
 
 All notable changes to this package are documented here.
 
+## 0.1.4 - 2026-07-28
+
+- Added the `content-assets` public subpath for syncing co-located Content assets to static public directories.
+- Added safe relative-path, extension, file-size, symlink, and source/output boundary validation.
+- Added an asset catalog for existence checks and public URL resolution.
+- Documented the reusable Content Asset convention and its derived-project boundary.
+
 ## 0.1.3 - 2026-07-27
 
 - Added reusable Astro UI primitives for layout, section headings, metadata, tags, links, skip navigation, and visually hidden text.

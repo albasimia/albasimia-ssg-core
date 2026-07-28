@@ -43,7 +43,7 @@ describe("asc init", () => {
         preview: "astro preview",
       },
       dependencies: {
-        "albasimia-ssg-core": "^0.1.3",
+        "albasimia-ssg-core": "^0.1.4",
       },
     });
     expect(readFileSync(join(target, "src/pages/index.astro"), "utf8"))
@@ -102,7 +102,7 @@ describe("asc init", () => {
   it("prints its version and usage", () => {
     expect(execFileSync(process.execPath, [cliPath, "--version"], {
       encoding: "utf8",
-    }).trim()).toBe("0.1.3");
+    }).trim()).toBe("0.1.4");
     expect(execFileSync(process.execPath, [cliPath, "--help"], {
       encoding: "utf8",
     })).toContain("asc init [directory]");

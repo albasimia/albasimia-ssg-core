@@ -1,6 +1,6 @@
 {
   "name": "albasimia-ssg-core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "type": "module",
   "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
@@ -41,6 +41,10 @@
       "types": "./package-dist/features/content-source/index.d.ts",
       "import": "./package-dist/features/content-source/index.js"
     },
+    "./content-assets": {
+      "types": "./package-dist/features/content-assets/index.d.ts",
+      "import": "./package-dist/features/content-assets/index.js"
+    },
     "./git-content": {
       "types": "./package-dist/features/git-content/index.d.ts",
       "import": "./package-dist/features/git-content/index.js"
@@ -67,6 +71,7 @@
     "package-dist/features/site-meta/",
     "package-dist/features/sitemap/",
     "package-dist/features/content-source/",
+    "package-dist/features/content-assets/",
     "package-dist/features/git-content/",
     "package-dist/features/deploy-status/",
     "package-dist/internal/github-api/",

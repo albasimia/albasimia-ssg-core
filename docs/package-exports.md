@@ -10,13 +10,14 @@
 
 ## 公開subpath
 
-TypeScript featureは次の5 subpathだけを公開する。
+TypeScript featureは次の6 subpathだけを公開する。
 
 | subpath | source境界 | 主なruntime API |
 | --- | --- | --- |
 | `albasimia-ssg-core/site-meta` | `src/features/site-meta/index.ts` | `defineSiteConfig`、meta純粋関数、`SiteMetaError` |
 | `albasimia-ssg-core/sitemap` | `src/features/sitemap/index.ts` | `createSitemapXml`、`SitemapError` |
 | `albasimia-ssg-core/content-source` | `src/features/content-source/index.ts` | YAML / Markdown codec、`ContentSourceError` |
+| `albasimia-ssg-core/content-assets` | `src/features/content-assets/index.ts` | Content Asset同期、参照検証、公開URL解決、`ContentAssetError` |
 | `albasimia-ssg-core/git-content` | `src/features/git-content/index.ts` | GitHub client、同一Commit保存、error class |
 | `albasimia-ssg-core/deploy-status` | `src/features/deploy-status/index.ts` | GitHub Actions実行状態client、`GitHubApiError` |
 
@@ -51,7 +52,7 @@ package rootの`albasimia-ssg-core`にはexportを設けない。
 
 ## build
 
-`npm run build:package`は`tsconfig.lib.json`を使用し、5つの`index.ts`をentryとして`package-dist/`へJavaScriptと`.d.ts`を生成する。
+`npm run build:package`は`tsconfig.lib.json`を使用し、6つの`index.ts`をentryとして`package-dist/`へJavaScriptと`.d.ts`を生成する。
 
 - `module`と`moduleResolution`は`NodeNext`
 - 出力はESMのみ
@@ -66,7 +67,7 @@ package rootの`albasimia-ssg-core`にはexportを設けない。
 
 ## private境界
 
-`package.json`の`exports`は公開5 subpathだけを列挙する。次は公開しない。
+`package.json`の`exports`は公開6 subpathだけを列挙する。次は公開しない。
 
 - package root
 - `src/internal`
@@ -80,7 +81,7 @@ GitHub request/errorの共有実装は、`git-content`と`deploy-status`の生�
 
 `files`はallowlistとし、次だけを配布する。
 
-- 5 featureのcompile済みJavaScriptと`.d.ts`
+- 6 featureのcompile済みJavaScriptと`.d.ts`
 - GitHub APIのcompile済み共有internal
 - package用`BaseLayout.astro`
 - compile済み`theme.css`と`global.css`
@@ -107,7 +108,7 @@ TypeScript feature自体はimport時にglobal stateやI/Oを変更しない。Ba
 
 ## dependency境界
 
-公開5 featureのruntime dependencyは`yaml`だけである。公開`BaseLayout.astro`をcompileするconsumerにはAstroが必要なため、Astro 7を`peerDependencies`に置き、ASC自身のbuild/test用として`devDependencies`にも保持する。Sassはcompile済みCSSを生成するbuild用`devDependency`に限定し、consumer dependencyにはしない。直接利用されていなかった`zod` dependencyは削除した。
+公開6 featureのruntime dependencyは`yaml`だけである。`content-assets`はNode.js標準moduleだけを使用する。公開`BaseLayout.astro`をcompileするconsumerにはAstroが必要なため、Astro 7を`peerDependencies`に置き、ASC自身のbuild/test用として`devDependencies`にも保持する。Sassはcompile済みCSSを生成するbuild用`devDependency`に限定し、consumer dependencyにはしない。直接利用されていなかった`zod` dependencyは削除した。
 
 package root exportはないため、`main`、`module`、root用`types`は設定しない。公開packageであることを`publishConfig.access: public`に明示し、version、license、repository、homepage、bugs、author、keywords、Node engineは`package.json`を正本とする。
 
@@ -115,8 +116,8 @@ package root exportはないため、`main`、`module`、root用`types`は設定
 
 `tests/package/package-distribution.test.ts`は実際のtarballを一時directoryへ作り、local dependencyだけを使って一時consumerへ`npm install`する。そのconsumerから次を確認する。
 
-- 5 subpathのruntime import
-- 5 subpathのTypeScript型解決
+- 6 subpathのruntime import
+- 6 subpathのTypeScript型解決
 - Node ESMでの実行
 - root、feature内部、共有internalのimport拒否
 - tarball fileのallowlist

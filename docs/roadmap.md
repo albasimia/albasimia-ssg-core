@@ -4,11 +4,12 @@
 
 - Deployment Foundation: Cloudflare Pages向けGitHub Actions / Wrangler雛形を2026-07-25に実装済み
 - Extraction A-01〜A-10: repository内の機能実装・単体テスト・個別文書を実装済み
-- Package Foundation: 5つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを2026-07-25に実装済み
+- Package Foundation: 6つのTypeScript featureのESM / declaration build、subpath exports、配布allowlist、pack consumer testを実装済み
 - Package Foundation: BaseLayout / compile済みCSS公開と、installed packageによる最小Astro consumer check / buildを2026-07-25に実装済み
 - Release Foundation: metadata、ADR、release checklist、通常CIのpackage/pack consumer検証を2026-07-25に確定
 - UI Foundation: `amano-pj`で確認したTheme / Container / Section / metadata等の最小Primitiveを実利用候補として抽出し、package consumer testを追加
-- 判定: repository内にv0.1 blockerはなく、UI Foundationの最小公開APIを含む`0.1.3`はrelease ready
+- Content Foundation: Content entryごとの`assets/`を公開領域へ安全に同期する`content-assets` featureを実装
+- 判定: repository内にv0.1 blockerはなく、Content Asset規約を含む`0.1.4`はrelease ready
 
 ## v0.1 Foundation
 
@@ -22,7 +23,7 @@ ASCの責務と設計原則に加え、A-01〜A-10とnpm配布基盤を含む最
 - Astro静的ビルド
 - CI
 - 最小サンプルサイト
-- 5つのTypeScript feature subpath
+- 6つのTypeScript feature subpath
 - BaseLayoutとcompile済みCSS
 - Cloudflare Pages deployment template
 - packed packageによる最小Astro consumer検証
@@ -69,7 +70,7 @@ Git管理されたコンテンツを静的ページへ変換する基盤を整�
 - Markdown描画
 - draft制御
 - コンテンツ検証
-- アセット参照規約
+- アセット参照規約（`content-assets`として先行実装）
 - 共通セクションレンダラーの検討
 
 ## v0.5 GitOps Foundation

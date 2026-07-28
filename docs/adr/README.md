@@ -40,3 +40,4 @@ ADR-0002-gitops-first.md
 - ADR-0006: YAML codec
 - ADR-0007: npm package distribution
 - ADR-0008: Cloudflare Pages deployment template
+- ADR-0009: co-located Content Assets

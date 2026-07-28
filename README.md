@@ -77,7 +77,7 @@ ASCは、次の機能を提供しません。
 ```sh
 mkdir my-site
 cd my-site
-npm install astro@^7.1.1 albasimia-ssg-core@^0.1.3
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.4
 npx asc init .
 npm run build
 ```
@@ -85,7 +85,7 @@ npm run build
 GitHub tagを利用する場合は、修正版tagをdependencyに指定します。
 
 ```sh
-npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.3
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.4
 npx asc init .
 npm run build
 ```
@@ -95,7 +95,7 @@ npm run build
 ### npm packageを手動構成で利用する
 
 ```sh
-npm install astro@^7.1.1 albasimia-ssg-core@^0.1.3
+npm install astro@^7.1.1 albasimia-ssg-core@^0.1.4
 ```
 
 Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro`のpeer dependencyです。SassはASCのbuild時にだけ使用し、consumerには不要です。
@@ -103,7 +103,7 @@ Node.js 22.12.0以上とAstro 7が必要です。Astroは公開`BaseLayout.astro
 GitHub tagから直接利用する場合は、`package-dist/`を生成する`prepare`を含む`v0.1.1`以降を指定します。`v0.1.0`は生成物を含まないため使用しません。
 
 ```sh
-npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.3
+npm install astro@^7.1.1 github:albasimia/albasimia-ssg-core#v0.1.4
 ```
 
 npm registry版とGitHub版のどちらも、install後は同じ公開subpathを利用できます。GitHub版のinstall中はASC自身のbuild dependencyが一時的に使われますが、consumerがSassやTypeScriptを直接追加する必要はありません。
@@ -117,6 +117,7 @@ import {
 } from "albasimia-ssg-core/site-meta";
 import { createSitemapXml } from "albasimia-ssg-core/sitemap";
 import { parseYamlSource } from "albasimia-ssg-core/content-source";
+import { syncContentAssets } from "albasimia-ssg-core/content-assets";
 import { createGitHubClient } from "albasimia-ssg-core/git-content";
 import { createDeploymentStatusClient } from "albasimia-ssg-core/deploy-status";
 ```
@@ -142,6 +143,8 @@ const site = defineSiteConfig({
 ```
 
 CSS単体のsubpathは`albasimia-ssg-core/styles/theme.css`と`albasimia-ssg-core/styles/global.css`です。raw SCSSは公開しません。詳細は[package公開方法](docs/package-exports.md)を参照してください。
+
+Contentと画像を同じdirectoryで管理する場合は、`content-assets`でContentごとの`assets/`を静的配信directoryへ同期できます。詳細は[Content Assets](docs/content-assets.md)を参照してください。
 
 ### UI Foundationを利用する
 

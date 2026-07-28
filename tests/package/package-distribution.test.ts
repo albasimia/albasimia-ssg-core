@@ -118,6 +118,7 @@ describe("npm package distribution", () => {
       "package-dist/features/site-meta/",
       "package-dist/features/sitemap/",
       "package-dist/features/content-source/",
+      "package-dist/features/content-assets/",
       "package-dist/features/git-content/",
       "package-dist/features/deploy-status/",
       "package-dist/internal/github-api/",
@@ -130,6 +131,8 @@ describe("npm package distribution", () => {
     expect(paths).toContain("package-dist/features/site-meta/index.js");
     expect(paths).toContain("package-dist/features/site-meta/index.d.ts");
     expect(paths).toContain("package-dist/features/deploy-status/index.js");
+    expect(paths).toContain("package-dist/features/content-assets/index.js");
+    expect(paths).toContain("package-dist/features/content-assets/index.d.ts");
     expect(paths).toContain("package-dist/layouts/BaseLayout.astro");
     expect(paths).toContain("package-dist/components/Container.astro");
     expect(paths).toContain("package-dist/components/SkipLink.astro");
@@ -155,6 +158,7 @@ describe("npm package distribution", () => {
         "site-meta": ["SiteMetaError", "createCanonicalUrl", "createPageTitle", "defineSiteConfig", "serializeJsonLd", "serializeRobots"],
         sitemap: ["SitemapError", "createSitemapXml"],
         "content-source": ["ContentSourceError", "parseMarkdownFrontmatter", "parseYamlSource", "stringifyMarkdownFrontmatter", "stringifyYamlSource"],
+        "content-assets": ["ContentAssetError", "DEFAULT_CONTENT_ASSET_EXTENSIONS", "createContentAssetUrl", "syncContentAssets"],
         "git-content": ["GitFileCommitError", "GitHubApiError", "commitGitFileChanges", "createGitHubClient"],
         "deploy-status": ["GitHubApiError", "createDeploymentStatusClient"],
       };
@@ -171,21 +175,23 @@ describe("npm package distribution", () => {
     )).not.toThrow();
   });
 
-  it("resolves public declarations from all five subpaths", () => {
+  it("resolves public declarations from all six subpaths", () => {
     const sourcePath = join(consumerDirectory, "consumer.ts");
     writeFileSync(sourcePath, `
       import { defineSiteConfig, type PageMeta } from "albasimia-ssg-core/site-meta";
       import { createSitemapXml, type SitemapUrlInput } from "albasimia-ssg-core/sitemap";
       import { parseYamlSource, type ParseSourceOptions } from "albasimia-ssg-core/content-source";
+      import { createContentAssetUrl, syncContentAssets, type ContentAssetSyncOptions } from "albasimia-ssg-core/content-assets";
       import { createGitHubClient, type GitHubClientConfig } from "albasimia-ssg-core/git-content";
       import { createDeploymentStatusClient, type DeploymentRun } from "albasimia-ssg-core/deploy-status";
       const site = defineSiteConfig({ name: "Example", siteUrl: "https://example.com", description: "Example", locale: "en" });
       const page: PageMeta = { title: "Page" };
       const urls: SitemapUrlInput[] = [site.siteUrl];
       const options: ParseSourceOptions = { sourceName: "data.yaml" };
+      const assetOptions: ContentAssetSyncOptions = { sourceRoot: "content", outputRoot: "public", publicBasePath: "/images" };
       type Config = GitHubClientConfig;
       type Run = DeploymentRun;
-      void [page, createSitemapXml(urls), parseYamlSource("value: true", options), createGitHubClient, createDeploymentStatusClient];
+      void [page, createSitemapXml(urls), parseYamlSource("value: true", options), createContentAssetUrl("/images", "sample", "hero.webp"), syncContentAssets, assetOptions, createGitHubClient, createDeploymentStatusClient];
       void (undefined as unknown as Config);
       void (undefined as unknown as Run);
     `);
