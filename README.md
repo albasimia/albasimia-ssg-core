@@ -144,7 +144,7 @@ const site = defineSiteConfig({
 
 CSS単体のsubpathは`albasimia-ssg-core/styles/theme.css`と`albasimia-ssg-core/styles/global.css`です。raw SCSSは公開しません。詳細は[package公開方法](docs/package-exports.md)を参照してください。
 
-Contentと画像を同じdirectoryで管理する場合は、`content-assets`でContentごとの`assets/`を静的配信directoryへ同期できます。詳細は[Content Assets](docs/content-assets.md)を参照してください。
+Contentと画像を同じdirectoryで管理する場合は、`content-assets`でContentごとの`assets/`を静的配信directoryへ同期できます。Content Bundleの標準構成には`{entryName}/index.md`を推奨しますが、API自体は本文のfile名を拘束しません。詳細は[Content Assets](docs/content-assets.md)を参照してください。
 
 ### UI Foundationを利用する
 

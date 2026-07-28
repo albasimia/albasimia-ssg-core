@@ -13,6 +13,7 @@ Accepted
 ## 決定
 
 - Content entryごとのdirectory内に`assets/`を置く
+- Content本文のfile名はAPIで拘束しないが、directory単位で扱う標準構成として`index.md`を推奨する
 - ASCはfilesystem同期、安全な相対パス検証、公開URL解決を`content-assets` subpathとして提供する
 - collection schema、Asset field名、画像寸法などのドメイン規則は派生プロジェクトに置く
 - Assetはbuild前に`public/`配下へ同期し、静的URLとして配信する

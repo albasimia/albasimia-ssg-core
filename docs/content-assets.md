@@ -7,7 +7,7 @@ Content本文と、そのContentだけで使用する画像を同じdirectoryで
 ```text
 src/content/projects/
 └── watari-ea/
-    ├── project.md
+    ├── index.md
     └── assets/
         ├── hero.webp
         └── gallery/
@@ -15,6 +15,8 @@ src/content/projects/
 ```
 
 ASCはcollection固有のschemaや画像の役割を持たない。派生プロジェクトが`heroImage`、`gallery`などのfieldを定義し、ASCはassetの配置、検証、同期、公開URL解決だけを担当する。
+
+ASCのAPIはContent本文のfile名を参照しない。Content Bundleをdirectory単位で移動でき、collectionが増えても同じ規則を利用できるよう、consumerの標準構成には`index.md`を推奨する。別名を使う必要があるconsumerはloader側で任意のfile名を指定できる。
 
 ## 同期
 
