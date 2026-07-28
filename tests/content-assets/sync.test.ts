@@ -31,7 +31,7 @@ describe("content assets", () => {
     writeAsset(sourceRoot, "watari-ea", "hero.webp", "hero");
     writeAsset(sourceRoot, "watari-ea", "gallery/detail.webp", "detail");
     writeAsset(sourceRoot, "other-project", "cover.jpg", "cover");
-    writeAsset(sourceRoot, "no-assets", "../project.md", "ignored content");
+    writeEntry(sourceRoot, "no-assets");
     mkdirSync(outputRoot, { recursive: true });
     writeFileSync(join(outputRoot, "stale.webp"), "stale");
 
@@ -69,6 +69,26 @@ describe("content assets", () => {
       .toThrow(expect.objectContaining({ code: "ASSET_NOT_FOUND" }));
     expect(() => catalog.resolve("sample", "../hero.webp"))
       .toThrow(expect.objectContaining({ code: "INVALID_PATH" }));
+  });
+
+  it("requires index.md and rejects additional entry Markdown", async () => {
+    const root = createTemporaryDirectory();
+    const sourceRoot = join(root, "content");
+    const outputRoot = join(root, "public");
+    const missingEntryRoot = join(sourceRoot, "missing-index");
+    mkdirSync(join(missingEntryRoot, "assets"), { recursive: true });
+    writeFileSync(join(missingEntryRoot, "assets", "hero.webp"), "hero");
+
+    await expect(syncContentAssets({ sourceRoot, outputRoot, publicBasePath: "/images" }))
+      .rejects.toMatchObject({ code: "ENTRY_DOCUMENT_NOT_FOUND", path: missingEntryRoot });
+
+    rmSync(missingEntryRoot, { recursive: true, force: true });
+    writeEntry(sourceRoot, "additional-markdown");
+    const unexpectedDocument = join(sourceRoot, "additional-markdown", "notes.md");
+    writeFileSync(unexpectedDocument, "notes");
+
+    await expect(syncContentAssets({ sourceRoot, outputRoot, publicBasePath: "/images" }))
+      .rejects.toMatchObject({ code: "UNEXPECTED_ENTRY_DOCUMENT", path: unexpectedDocument });
   });
 
   it("validates all assets before cleaning the output", async () => {
@@ -115,7 +135,14 @@ function createTemporaryDirectory(): string {
 }
 
 function writeAsset(sourceRoot: string, entryName: string, relativePath: string, contents: string): void {
+  writeEntry(sourceRoot, entryName);
   const file = join(sourceRoot, entryName, "assets", relativePath);
   mkdirSync(join(file, ".."), { recursive: true });
   writeFileSync(file, contents);
+}
+
+function writeEntry(sourceRoot: string, entryName: string): void {
+  const entryRoot = join(sourceRoot, entryName);
+  mkdirSync(entryRoot, { recursive: true });
+  writeFileSync(join(entryRoot, "index.md"), "---\n---\n");
 }

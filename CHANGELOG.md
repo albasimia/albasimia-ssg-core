@@ -2,6 +2,12 @@
 
 All notable changes to this package are documented here.
 
+## 0.1.5 - 2026-07-28
+
+- Standardized Content Bundle entry documents on `{entryName}/index.md`.
+- Added build-time validation for missing `index.md` and additional Markdown files beside it.
+- Kept structured supplemental data in `data/` and images in `assets/` as consumer-owned bundle contents.
+
 ## 0.1.4 - 2026-07-28
 
 - Added the `content-assets` public subpath for syncing co-located Content assets to static public directories.

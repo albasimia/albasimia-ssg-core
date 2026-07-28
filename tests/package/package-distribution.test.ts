@@ -158,7 +158,7 @@ describe("npm package distribution", () => {
         "site-meta": ["SiteMetaError", "createCanonicalUrl", "createPageTitle", "defineSiteConfig", "serializeJsonLd", "serializeRobots"],
         sitemap: ["SitemapError", "createSitemapXml"],
         "content-source": ["ContentSourceError", "parseMarkdownFrontmatter", "parseYamlSource", "stringifyMarkdownFrontmatter", "stringifyYamlSource"],
-        "content-assets": ["ContentAssetError", "DEFAULT_CONTENT_ASSET_EXTENSIONS", "createContentAssetUrl", "syncContentAssets"],
+        "content-assets": ["CONTENT_ENTRY_FILENAME", "ContentAssetError", "DEFAULT_CONTENT_ASSET_EXTENSIONS", "createContentAssetUrl", "syncContentAssets"],
         "git-content": ["GitFileCommitError", "GitHubApiError", "commitGitFileChanges", "createGitHubClient"],
         "deploy-status": ["GitHubApiError", "createDeploymentStatusClient"],
       };

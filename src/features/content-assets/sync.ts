@@ -39,6 +39,8 @@ export const DEFAULT_CONTENT_ASSET_EXTENSIONS = [
   ".webp",
 ] as const;
 
+export const CONTENT_ENTRY_FILENAME = "index.md";
+
 interface DiscoveredAsset {
   entryName: string;
   relativePath: string;
@@ -55,6 +57,7 @@ export async function syncContentAssets(options: ContentAssetSyncOptions): Promi
   const assetDirectoryName = normalizePathSegment(options.assetDirectoryName ?? "assets", "assetDirectoryName");
   const allowedExtensions = normalizeExtensions(options.allowedExtensions ?? DEFAULT_CONTENT_ASSET_EXTENSIONS);
   const maxFileBytes = normalizeMaxFileBytes(options.maxFileBytes);
+  await validateContentEntryDocuments(sourceRoot);
   const discovered = await discoverAssets(sourceRoot, assetDirectoryName, allowedExtensions, maxFileBytes);
 
   try {
@@ -80,6 +83,54 @@ export async function syncContentAssets(options: ContentAssetSyncOptions): Promi
     publicPath: createPublicAssetPath(publicBasePath, asset.entryName, asset.relativePath),
   }));
   return createCatalog(records, publicBasePath);
+}
+
+async function validateContentEntryDocuments(sourceRoot: string): Promise<void> {
+  let entries;
+  try {
+    entries = await readdir(sourceRoot, { withFileTypes: true });
+  } catch (cause) {
+    throw new ContentAssetError(`Content rootを読み込めません: ${sourceRoot}`, {
+      code: "SOURCE_READ_FAILED",
+      path: sourceRoot,
+      cause,
+    });
+  }
+
+  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+    if (!entry.isDirectory() || entry.isSymbolicLink()) continue;
+    const entryRoot = join(sourceRoot, normalizePathSegment(entry.name, "entryName"));
+    let files;
+    try {
+      files = await readdir(entryRoot, { withFileTypes: true });
+    } catch (cause) {
+      throw new ContentAssetError(`Content entryを読み込めません: ${entryRoot}`, {
+        code: "SOURCE_READ_FAILED",
+        path: entryRoot,
+        cause,
+      });
+    }
+
+    const entryDocument = files.find((file) => file.name === CONTENT_ENTRY_FILENAME && file.isFile());
+    if (!entryDocument) {
+      throw new ContentAssetError(`Content entryに${CONTENT_ENTRY_FILENAME}がありません: ${entryRoot}`, {
+        code: "ENTRY_DOCUMENT_NOT_FOUND",
+        path: entryRoot,
+      });
+    }
+
+    const unexpectedDocuments = files
+      .filter((file) => file.isFile() && /\.mdx?$/i.test(file.name) && file.name !== CONTENT_ENTRY_FILENAME)
+      .map((file) => file.name)
+      .sort();
+    if (unexpectedDocuments.length > 0) {
+      const documentPath = join(entryRoot, unexpectedDocuments[0]);
+      throw new ContentAssetError(`Content entry直下のMarkdownは${CONTENT_ENTRY_FILENAME}だけ使用できます: ${documentPath}`, {
+        code: "UNEXPECTED_ENTRY_DOCUMENT",
+        path: documentPath,
+      });
+    }
+  }
 }
 
 export function createContentAssetUrl(publicBasePath: string, entryName: string, relativePath: string): string {

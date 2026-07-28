@@ -16,7 +16,7 @@ src/content/projects/
 
 ASCはcollection固有のschemaや画像の役割を持たない。派生プロジェクトが`heroImage`、`gallery`などのfieldを定義し、ASCはassetの配置、検証、同期、公開URL解決だけを担当する。
 
-ASCのAPIはContent本文のfile名を参照しない。Content Bundleをdirectory単位で移動でき、collectionが増えても同じ規則を利用できるよう、consumerの標準構成には`index.md`を推奨する。別名を使う必要があるconsumerはloader側で任意のfile名を指定できる。
+Content Bundleをdirectory単位で移動でき、collectionが増えても同じ規則を利用できるよう、本文はentry directory直下の`index.md`に統一する。`index.md`がないentryや、同じ階層に別の`.md` / `.mdx`があるentryは同期時に拒否する。構造化された補助データは`data/`、画像は`assets/`へ分離する。
 
 ## 同期
 
@@ -70,6 +70,8 @@ createContentAssetUrl("/images/projects", "watari-ea", "hero.webp");
 ## 安全性
 
 - 絶対パス、`..`、空segment、backslashを含むAsset参照を拒否する
+- entry directory直下に`index.md`がない構成を拒否する
+- entry directory直下に`index.md`以外のMarkdownがある構成を拒否する
 - Asset directory内のsymbolic linkを拒否する
 - `sourceRoot`と`outputRoot`が包含関係にある設定を拒否する
 - 許可されていない拡張子を拒否する

@@ -9,7 +9,7 @@
 - Release Foundation: metadata、ADR、release checklist、通常CIのpackage/pack consumer検証を2026-07-25に確定
 - UI Foundation: `amano-pj`で確認したTheme / Container / Section / metadata等の最小Primitiveを実利用候補として抽出し、package consumer testを追加
 - Content Foundation: Content entryごとの`assets/`を公開領域へ安全に同期する`content-assets` featureを実装
-- 判定: repository内にv0.1 blockerはなく、Content Asset規約を含む`0.1.4`はrelease ready
+- 判定: repository内にv0.1 blockerはなく、`index.md`へ統一したContent Bundle規約を含む`0.1.5`はrelease ready
 
 ## v0.1 Foundation
 

@@ -4,6 +4,7 @@ import * as contentAssets from "../../src/features/content-assets/index.js";
 describe("content-assets public API", () => {
   it("exports only the documented runtime surface", () => {
     expect(Object.keys(contentAssets).sort()).toEqual([
+      "CONTENT_ENTRY_FILENAME",
       "ContentAssetError",
       "DEFAULT_CONTENT_ASSET_EXTENSIONS",
       "createContentAssetUrl",

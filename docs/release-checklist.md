@@ -1,6 +1,6 @@
 # v0.1 release checklist
 
-`0.1.4`をreleaseする直前に、release担当者が実行・確認する。CIは検証までを担当し、npm publish、GitHub Release、実Cloudflare deployは行わない。
+`0.1.5`をreleaseする直前に、release担当者が実行・確認する。CIは検証までを担当し、npm publish、GitHub Release、実Cloudflare deployは行わない。
 
 ## Repository検証
 
@@ -16,7 +16,7 @@
 
 - [ ] tarballが`package-dist`の公開生成物、deployment template、README、CHANGELOG、LICENSE、package metadataだけを含む
 - [ ] tarballに`src`、tests、sample site、CI、docs、raw SCSS、credentialが含まれない
-- [ ] `package.json`とCHANGELOGのversionが`0.1.4`で一致する
+- [ ] `package.json`とCHANGELOGのversionが`0.1.5`で一致する
 - [ ] repository、homepage、bugs、author、keywords、license、engines、peer dependencyを確認する
 - [ ] MIT LICENSEの内容とcopyright holderを確認する
 - [ ] CHANGELOGまたはrelease notesが公開内容と一致する
@@ -25,7 +25,7 @@
 ## 派生project確認と公開判断
 
 - [ ] `catharsiswatari-events`でA-05 YAML codecとA-06 Markdown frontmatter codecを実データに対して利用確認する（本repositoryのrelease作業では移行しない）
-- [ ] tag `v0.1.4`からclean installし、`prepare`後の`package-dist/`を確認する
+- [ ] tag `v0.1.5`からclean installし、`prepare`後の`package-dist/`を確認する
 - [ ] installed packageの`npx asc init .`で生成した最小siteがAstro buildできることを確認する
 - [ ] 公開version、npm account、公開範囲をrelease担当者が最終確認する
 - [ ] `npm publish`は自動化せず、上記確認後に手動で判断する

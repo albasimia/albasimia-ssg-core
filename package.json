@@ -1,6 +1,6 @@
 {
   "name": "albasimia-ssg-core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": false,
   "type": "module",
   "description": "Reusable Astro foundations for static sites, content sources, GitOps, and deployment workflows.",
