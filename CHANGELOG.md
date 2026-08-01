@@ -2,6 +2,11 @@
 
 All notable changes to this package are documented here.
 
+## 0.1.6 - 2026-08-01
+
+* Added `initial-scale=1` to the default viewport metadata.
+* Fixed unintended zoom restoration and right-side whitespace when resuming pages in iOS Safari.
+
 ## 0.1.5 - 2026-07-28
 
 - Standardized Content Bundle entry documents on `{entryName}/index.md`.
